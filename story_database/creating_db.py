@@ -12,7 +12,7 @@ insert_stmt = (
     "VALUES (%s, %s, %s)"
 )
 
-with open('story_database.csv', 'r', encoding='utf-8') as csvfile:
+with open('story_database/story_table.csv', 'r', encoding='utf-8') as csvfile:
     csvreader = csv.reader(csvfile)
     next(csvreader)
     for row in csvreader:
