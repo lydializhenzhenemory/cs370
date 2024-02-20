@@ -19,7 +19,7 @@ def new_game():
     connection = pymysql.connect(**db_config)
     try:
         with connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM stories")
+            cursor.execute("SELECT surface_story FROM stories")
             result = cursor.fetchall()
             random_story = random.choice(result) if result else None
             return jsonify(random_story)
