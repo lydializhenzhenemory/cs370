@@ -16,7 +16,8 @@ with open('story_database/story_table.csv', 'r', encoding='utf-8') as csvfile:
     csvreader = csv.reader(csvfile)
     next(csvreader)
     for row in csvreader:
-        cursor.execute(insert_stmt, row)
+        #cursor.execute(insert_stmt, row)
+        a = 1
 db_connection.commit()
 cursor.close()
 db_connection.close()
