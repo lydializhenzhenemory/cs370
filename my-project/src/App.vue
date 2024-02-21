@@ -1,14 +1,16 @@
- <!-- App.vue -->
- <template>
-  <div id="app">
-    <router-view></router-view> <!-- This renders the current route's component -->
-  </div>
+<template>
+  <img alt="Vue logo" src="./assets/logo.png">
+  <HelloWorld msg="Welcome to Your Vue.js App"/>
 </template>
 
 <script>
+import HelloWorld from './components/HelloWorld.vue'
+
 export default {
-  name: 'App'
-  // No need to declare components for router-view
+  name: 'App',
+  components: {
+    HelloWorld
+  }
 }
 </script>
 
