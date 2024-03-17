@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: 'DetectiveGame',
   data() {
@@ -42,7 +43,14 @@ export default {
     };
   },
   mounted() {
-    this.typeTitle('story prompt: It is Jake\'s birthday today. His dog died in the afternoon.');
+    const path = 'http://localhost:5001/single_player';
+      axios.get(path)
+        .then((res) => {
+          this.typeTitle('story prompt: ' + res);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
   },
   methods: {
     typeTitle(title) {
@@ -56,7 +64,15 @@ export default {
       }, 150); // Adjust the speed of typing by changing the interval time
     },
     submitQuestion() {
-      console.log(this.userQuestion); // For now, just log it to the console
+      //console.log(this.userQuestion); // For now, just log it to the console
+      const path = 'http://localhost:5001/single_player/question';
+      axios.get(path)
+        .then((res) => {
+          this.typeTitle('response: ' + res);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     }
   }
 }
