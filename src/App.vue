@@ -8,7 +8,6 @@
 <script>
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { GoogleAuthProvider } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAel8It8cUySYD286fxw145yDP1nG9ryhE",
@@ -23,8 +22,8 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+// eslint-disable-next-line
 const analytics = getAnalytics(app);
-const provider = new GoogleAuthProvider();
 
 export default {
   name: 'App'
