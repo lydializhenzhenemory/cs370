@@ -69,6 +69,11 @@ export default {
   },
   mounted() {
     this.typeTitle('DetectAIve', true);
+    if(sessionStorage.getItem('user') == null){
+      this.signInOut = "Sign In";
+    } else {
+      this.signInOut = "Sign Out";
+    }
   },
   methods: {
     typeTitle(title, recursive = false) {
