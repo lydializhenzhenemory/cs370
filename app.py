@@ -20,30 +20,93 @@ openai_client = OpenAI(api_key=api_key)
 
 @app.route('/')
 def home():
-    return "Welcome to the Story Game! Access /single_player_game to start a new game."
+    return "Welcome to the Story Game! Access /single_player to start a new game."
 
-@app.route('/single_player_game', methods=['GET', 'POST'])
-def single_player_game():
-    if request.method == 'GET':
-        # Fetch a random story from the database
-        connection = pymysql.connect(**db_config)
-        try:
-            with connection.cursor(pymysql.cursors.DictCursor) as cursor:
-                cursor.execute("SELECT surface_story, truth FROM stories")
-                result = cursor.fetchall()
-                random_story = random.choice(result) if result else None
-                return jsonify({"surface_story": random_story['surface_story']})
-        finally:
-            connection.close()
-    elif request.method == 'POST':
-        # Get the user's question and the story from the POST request
-        data = request.json
-        question = data.get('question')
-        story = data.get('story')
-        
-        # Call the OpenAI API with the user's question and the story
-        response = openai_chat(question, story)
-        return jsonify({"response": response})
+@app.route('/single_player', methods=['GET'])
+def fetch_story():
+    # Handling the GET request for fetching a random story
+    connection = pymysql.connect(**db_config)
+    try:
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            cursor.execute("SELECT surface_story, truth FROM stories")
+            result = cursor.fetchall()
+            random_story = random.choice(result) if result else None
+            return jsonify({"surface_story": random_story['surface_story']})
+    finally:
+        connection.close()
+
+
+@app.route('/single_player/question', methods=['POST'])
+def handle_question():
+    data = request.json
+    question = data.get('question')
+    story_id = data.get('story_id')
+    user_id = data.get('user_id')  # Assuming you're passing the user ID
+
+    connection = pymysql.connect(**db_config)
+    response = None
+    try:
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            # Fetch the story's truth based on the story_id from the database
+            cursor.execute("SELECT truth FROM stories WHERE id = %s", (story_id,))
+            story = cursor.fetchone()
+
+        if story:
+            # Call OpenAI API with the user's question and the story's truth
+            combined_input = f"Question: {question}\nTruth: {story['truth']}"
+            response = openai_chat(combined_input)  # TODO: Update with actual parameters needed for OpenAI API
+
+            # Increment the question_attempts count for the user-story pair in the user_story_attempts table
+            with connection.cursor() as cursor:
+                cursor.execute("INSERT INTO user_story_attempts (user_id, story_id, question_attempts) VALUES (%s, %s, 1) ON DUPLICATE KEY UPDATE question_attempts = question_attempts + 1", (user_id, story_id))
+                connection.commit()
+        else:
+            return jsonify({"error": "Story not found"}), 404
+    except pymysql.MySQLError as e:
+        print(e)
+    finally:
+        connection.close()
+
+    return jsonify({"response": response})
+
+@app.route('/single_player/guess', methods=['POST'])
+def handle_guess():
+    data = request.json
+    guess = data.get('guess')
+    story_id = data.get('story_id')
+    user_id = data.get('user_id')
+
+    connection = pymysql.connect(**db_config)
+    success = None
+    try:
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            # Fetch the story's truth for validation
+            cursor.execute("SELECT truth FROM stories WHERE id = %s", (story_id,))
+            story = cursor.fetchone()
+
+        if story:
+            # Logic to determine if the guess is correct (this could be a simple string comparison or something more sophisticated)
+            is_correct = guess.lower().strip() == story['truth'].lower().strip()
+            success = int(is_correct)
+
+            # Update the user_story_attempts table with the result of the guess
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    INSERT INTO user_story_attempts (user_id, story_id, question_attempts, success) 
+                    VALUES (%s, %s, 1, %s) 
+                    ON DUPLICATE KEY UPDATE 
+                        question_attempts = question_attempts + 1, success = VALUES(success)
+                """, (user_id, story_id, success))
+                connection.commit()
+        else:
+            return jsonify({"error": "Story not found"}), 404
+    except pymysql.MySQLError as e:
+        print(e)
+    finally:
+        connection.close()
+
+    return jsonify({"is_correct": success})
+
 
 if __name__ == '__main__':
     app.run(debug=True)
