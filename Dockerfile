@@ -21,6 +21,22 @@ RUN pip install pandas
 #RUN pip install click --upgrade
 #RUN pip install os-sys
 
+# Define an argument with a default value
+ARG OPENAI_API_KEY=init
+ARG HOST=init
+ARG PORT=init
+ARG DATABASE=init
+ARG USER=init
+ARG PASSWORD=init
+
+# Set an environment variable using the ARG value
+ENV OPENAI_API_KEY=$OPENAI_API_KEY
+ENV HOST=$HOST
+ENV PORT=$PORT
+ENV DATABASE=$DATABASE
+ENV USER=$USER
+ENV PASSWORD=$PASSWORD
+
 # Run the web service on container startup. Here we use the gunicorn
 # webserver, with one worker process and 8 threads.
 # For environments with multiple CPU cores, increase the number of workers

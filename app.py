@@ -18,6 +18,8 @@ with open('openai_api_key.txt', 'r') as file:
 
 openai_client = OpenAI(api_key=api_key)
 
+#openai_client = OpenAI(api_key=process.env.API_KEY)
+
 @app.route('/')
 def home():
     return "Welcome to the Story Game! Access /single_player to start a new game."
@@ -26,6 +28,7 @@ def home():
 def fetch_story():
     # Handling the GET request for fetching a random story
     connection = pymysql.connect(**db_config)
+    #connection = pymysql.connect(host = process.env.HOST, port = process.env.PORT, database = process.env.DATABASE, user = process.env.USER, password = process.env.PASSWORD)
     try:
         with connection.cursor(pymysql.cursors.DictCursor) as cursor:
             cursor.execute("SELECT surface_story, truth FROM stories")
@@ -44,6 +47,7 @@ def handle_question():
     user_id = data.get('user_id')  # Assuming you're passing the user ID
 
     connection = pymysql.connect(**db_config)
+    #connection = pymysql.connect(host = process.env.HOST, port = process.env.PORT, database = process.env.DATABASE, user = process.env.USER, password = process.env.PASSWORD)
     response = None
     try:
         with connection.cursor(pymysql.cursors.DictCursor) as cursor:
@@ -77,6 +81,7 @@ def handle_guess():
     user_id = data.get('user_id')
 
     connection = pymysql.connect(**db_config)
+    #connection = pymysql.connect(host = process.env.HOST, port = process.env.PORT, database = process.env.DATABASE, user = process.env.USER, password = process.env.PASSWORD)
     success = None
     try:
         with connection.cursor(pymysql.cursors.DictCursor) as cursor:
