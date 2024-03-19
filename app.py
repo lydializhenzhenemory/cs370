@@ -6,6 +6,7 @@ import pymysql.cursors
 import pymysql.cursors
 from openai import OpenAI
 from test_gpt import openai_chat
+import os
 
 app = Flask(__name__)
 CORS(app)
@@ -18,7 +19,7 @@ with open('openai_api_key.txt', 'r') as file:
 
 #openai_client = OpenAI(api_key=api_key)
 
-openai_client = OpenAI(api_key=process.env.API_KEY)
+openai_client = OpenAI(api_key=os.environ.get('API_KEY'))
 
 @app.route('/')
 def home():
@@ -28,7 +29,7 @@ def home():
 def fetch_story():
     # Handling the GET request for fetching a random story
     #connection = pymysql.connect(**db_config)
-    connection = pymysql.connect(host = process.env.HOST, port = process.env.PORT, database = process.env.DATABASE, user = process.env.USER, password = process.env.PASSWORD)
+    connection = pymysql.connect(host = os.environ.get('HOST'), port = os.environ.get('PORT'), database = os.environ.get('DATABASE'), user = os.environ.get('USER'), password = os.environ.get('PASSWORD'))
     try:
         with connection.cursor(pymysql.cursors.DictCursor) as cursor:
             cursor.execute("SELECT surface_story, truth FROM stories")
