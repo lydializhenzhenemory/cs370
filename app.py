@@ -41,7 +41,7 @@ def handle_question():
     data = request.json
     question = data.get('question')
     story_id = data.get('story_id')
-    user_id = data.get('user_id')  # Assuming you're passing the user ID
+    user_id = data.get('user_id') 
 
     connection = pymysql.connect(**db_config)
     response = None
