@@ -10,15 +10,15 @@ from test_gpt import openai_chat
 app = Flask(__name__)
 CORS(app)
 
-with open('db_config.json', 'r') as config_file:
+"""with open('db_config.json', 'r') as config_file:
     db_config = json.load(config_file)
 
 with open('openai_api_key.txt', 'r') as file:
-    api_key = file.read().strip()
+    api_key = file.read().strip()"""
 
-openai_client = OpenAI(api_key=api_key)
+#openai_client = OpenAI(api_key=api_key)
 
-#openai_client = OpenAI(api_key=process.env.API_KEY)
+openai_client = OpenAI(api_key=process.env.API_KEY)
 
 @app.route('/')
 def home():
@@ -27,8 +27,8 @@ def home():
 @app.route('/single_player', methods=['GET'])
 def fetch_story():
     # Handling the GET request for fetching a random story
-    connection = pymysql.connect(**db_config)
-    #connection = pymysql.connect(host = process.env.HOST, port = process.env.PORT, database = process.env.DATABASE, user = process.env.USER, password = process.env.PASSWORD)
+    #connection = pymysql.connect(**db_config)
+    connection = pymysql.connect(host = process.env.HOST, port = process.env.PORT, database = process.env.DATABASE, user = process.env.USER, password = process.env.PASSWORD)
     try:
         with connection.cursor(pymysql.cursors.DictCursor) as cursor:
             cursor.execute("SELECT surface_story, truth FROM stories")
@@ -41,13 +41,13 @@ def fetch_story():
 
 @app.route('/single_player/question', methods=['POST'])
 def handle_question():
-    data = request.json
+    data = request.get_json()
     question = data.get('question')
     story_id = data.get('story_id')
     user_id = data.get('user_id')  # Assuming you're passing the user ID
 
-    connection = pymysql.connect(**db_config)
-    #connection = pymysql.connect(host = process.env.HOST, port = process.env.PORT, database = process.env.DATABASE, user = process.env.USER, password = process.env.PASSWORD)
+    #connection = pymysql.connect(**db_config)
+    connection = pymysql.connect(host = process.env.HOST, port = process.env.PORT, database = process.env.DATABASE, user = process.env.USER, password = process.env.PASSWORD)
     response = None
     try:
         with connection.cursor(pymysql.cursors.DictCursor) as cursor:
@@ -80,8 +80,8 @@ def handle_guess():
     story_id = data.get('story_id')
     user_id = data.get('user_id')
 
-    connection = pymysql.connect(**db_config)
-    #connection = pymysql.connect(host = process.env.HOST, port = process.env.PORT, database = process.env.DATABASE, user = process.env.USER, password = process.env.PASSWORD)
+    #connection = pymysql.connect(**db_config)
+    connection = pymysql.connect(host = process.env.HOST, port = process.env.PORT, database = process.env.DATABASE, user = process.env.USER, password = process.env.PASSWORD)
     success = None
     try:
         with connection.cursor(pymysql.cursors.DictCursor) as cursor:
