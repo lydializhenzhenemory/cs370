@@ -19,7 +19,7 @@ RUN pip install -U flask-cors
 RUN pip install numpy
 RUN pip install pandas
 #RUN pip install click --upgrade
-RUN pip install os-sys
+#RUN pip install os-sys
 
 # Define an argument with a default value
 ARG OPENAI_API_KEY=init
