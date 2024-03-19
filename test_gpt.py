@@ -23,12 +23,46 @@ will never provide an explanation." + '\n' + "The story and the question are as 
 
     #print(prompt)
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        #model="gpt-3.5-turbo",
+        model="gpt-4",
         messages=[{"role": "user", "content": prompt}],
         temperature=0.5,
         max_tokens=10,
+        seed=1234
     )
     #return the response
+    return response.choices[0].message.content
+
+def win_or_lose(user_answer, story, surface_prompt):
+    with open('openai_api_key.txt', 'r') as file:
+        api_key = file.read().strip()
+    client = OpenAI(api_key=api_key)
+    prompt = ("Now I will give you a surface prompt, a story, and an answer. Your job is to"
+              "determine if the answer about the story is correct or not and if it is the root cause of what"
+              "happened in the surface prompt. Notice you can only output the exact word of either \'correct\' or \'incorrect\'. "
+              "Notice that the answer must hit the core of the story to be evaluated as correct. "
+              "For example, if the dog is killed by eating too much of a chocolate cake (as chocolate"
+              "is toxic to dogs), the answer needs to point out the determinate details of the story that is not "
+              "explicitly stated in the surface prompt. If the answer is only partially correct (the dog is died by a chemical cause, etc.),"
+              "it is still considered incorrect. The answer needs to hit all criteria below to be considered as correct:"
+              "1. explicitly stating the subject (a doll, a dog, a man, etc.) if the identity of this subject is not explicitly"
+              " stated in the surface prompt; 2. explicitly stating all root causes of what happened in the surface prompt (if I don\'t"
+              " want to step into the house again because of both there is a dead person in the house and that I had an illusion of"
+              "greeting someone in the house (who is already dead), the two causes should be both narrated in the answer); 3."
+              "explicitly stating how the causes are related to the strange/weird details appeared in the surface prompt, if some parts"
+              "of the prompt is not accounted, the answer is considered incorrect. "
+              "Now the story and the answer are as follows: " +
+              "surface_prompt: " + surface_prompt + '\n' + "story: " +
+              story + '\n' + "Answer: " + user_answer + "")
+    response = client.chat.completions.create(
+        # model="gpt-3.5-turbo",
+        model="gpt-4",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.5,
+        max_tokens=10,
+        seed=1234
+    )
+    # return the response
     return response.choices[0].message.content
 
 
