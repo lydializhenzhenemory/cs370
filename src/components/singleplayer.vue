@@ -23,6 +23,7 @@ export default {
     return {
       userQuestion: '',
       typedTitle: '',
+      story_id: '',
       gameContainerStyle: {
         position: 'relative',
         width: '100%',
@@ -43,10 +44,11 @@ export default {
     };
   },
   mounted() {
-    const path = 'http://localhost:5001/single_player';
+    const path = 'https://cs370projectbackend-0t8f5ewp.b4a.run/single_player';
       axios.get(path)
         .then((res) => {
-          this.typeTitle('story prompt: ' + res);
+          this.typeTitle('story prompt: ' + JSON.parse(JSON.stringify(res)).data.surface_story);
+          this.story_id = JSON.parse(JSON.stringify(res)).data.story_id;
         })
         .catch((error) => {
           console.error(error);
@@ -65,10 +67,10 @@ export default {
     },
     submitQuestion() {
       //console.log(this.userQuestion); // For now, just log it to the console
-      const path = 'http://localhost:5001/single_player/question';
-      axios.get(path)
+      const path = 'https://cs370projectbackend-0t8f5ewp.b4a.run/single_player/question';
+      axios.post(path, {question: this.userQuestion, story_id: this.story_id, user_id: ''})
         .then((res) => {
-          this.typeTitle('response: ' + res);
+          this.typeTitle('response: ' + JSON.parse(JSON.stringify(res)).data.response);
         })
         .catch((error) => {
           console.error(error);
