@@ -29,7 +29,7 @@ def home():
 def fetch_story():
     # Handling the GET request for fetching a random story
     #connection = pymysql.connect(**db_config)
-    connection = pymysql.connect(host = os.environ.get('HOST'), port = os.environ.get('PORT'), database = os.environ.get('DATABASE'), user = os.environ.get('USER'), password = os.environ.get('PASSWORD'))
+    connection = pymysql.connect(host = os.environ.get('HOST'), port = int(os.environ.get('PORT')), database = os.environ.get('DATABASE'), user = os.environ.get('USER'), password = os.environ.get('PASSWORD'))
     try:
         with connection.cursor(pymysql.cursors.DictCursor) as cursor:
             cursor.execute("SELECT surface_story, truth FROM stories")
@@ -48,7 +48,7 @@ def handle_question():
     user_id = data.get('user_id')  # Assuming you're passing the user ID
 
     #connection = pymysql.connect(**db_config)
-    connection = pymysql.connect(host = process.env.HOST, port = process.env.PORT, database = process.env.DATABASE, user = process.env.USER, password = process.env.PASSWORD)
+    connection = pymysql.connect(host = os.environ.get('HOST'), port = int(os.environ.get('PORT')), database = os.environ.get('DATABASE'), user = os.environ.get('USER'), password = os.environ.get('PASSWORD'))
     response = None
     try:
         with connection.cursor(pymysql.cursors.DictCursor) as cursor:
@@ -82,7 +82,7 @@ def handle_guess():
     user_id = data.get('user_id')
 
     #connection = pymysql.connect(**db_config)
-    connection = pymysql.connect(host = process.env.HOST, port = process.env.PORT, database = process.env.DATABASE, user = process.env.USER, password = process.env.PASSWORD)
+    connection = pymysql.connect(host = os.environ.get('HOST'), port = int(os.environ.get('PORT')), database = os.environ.get('DATABASE'), user = os.environ.get('USER'), password = os.environ.get('PASSWORD'))
     success = None
     try:
         with connection.cursor(pymysql.cursors.DictCursor) as cursor:
