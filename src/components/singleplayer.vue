@@ -16,12 +16,14 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: 'DetectiveGame',
   data() {
     return {
       userQuestion: '',
       typedTitle: '',
+      story_id: '',
       gameContainerStyle: {
         position: 'relative',
         width: '100%',
@@ -42,7 +44,15 @@ export default {
     };
   },
   mounted() {
-    this.typeTitle('story prompt: It is Jake\'s birthday today. His dog died in the afternoon.');
+    const path = 'https://cs370projectbackend-0t8f5ewp.b4a.run/single_player';
+      axios.get(path)
+        .then((res) => {
+          this.typeTitle('story prompt: ' + JSON.parse(JSON.stringify(res)).data.surface_story);
+          this.story_id = JSON.parse(JSON.stringify(res)).data.story_id;
+        })
+        .catch((error) => {
+          console.error(error);
+        });
   },
   methods: {
     typeTitle(title) {
@@ -56,7 +66,15 @@ export default {
       }, 150); // Adjust the speed of typing by changing the interval time
     },
     submitQuestion() {
-      console.log(this.userQuestion); // For now, just log it to the console
+      //console.log(this.userQuestion); // For now, just log it to the console
+      const path = 'https://cs370projectbackend-0t8f5ewp.b4a.run/single_player/question';
+      axios.post(path, {question: this.userQuestion, story_id: this.story_id, user_id: ''})
+        .then((res) => {
+          this.typeTitle('response: ' + JSON.parse(JSON.stringify(res)).data.response);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     }
   }
 }

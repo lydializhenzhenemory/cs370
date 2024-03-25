@@ -6,10 +6,17 @@
     <button id="start-button" @click="startGame" :style="startButtonStyle">
       Start Game
     </button>
+    <button id="sign-in-button" @click="signIn" :style="signinButtonStyle">
+      {{ signInOut }}
+    </button>
   </div>
 </template>
 
 <script>
+import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
+
+const provider = new GoogleAuthProvider();
+const auth = getAuth();
 export default {
   name: 'DetectiveGame',
   data() {
@@ -40,11 +47,33 @@ export default {
         boxShadow: '2px 2px 4px #000000',
         fontWeight: '550',
         fontFamily: "'Anta', sans-serif"
-      }
+      },
+      signinButtonStyle: {
+        position: 'absolute',
+        bottom: '20%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        padding: '15px 30px',
+        fontSize: '1.5em',
+        cursor: 'pointer',
+        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+        border: 'none',
+        borderRadius: '5px',
+        color: 'white',
+        boxShadow: '2px 2px 4px #000000',
+        fontWeight: '550',
+        fontFamily: "'Anta', sans-serif"
+      },
+      signInOut: "Sign In"
     };
   },
   mounted() {
     this.typeTitle('DetectAIve', true);
+    if(sessionStorage.getItem('user') == null){
+      this.signInOut = "Sign In";
+    } else {
+      this.signInOut = "Sign Out";
+    }
   },
   methods: {
     typeTitle(title, recursive = false) {
@@ -65,6 +94,55 @@ export default {
     },
     startGame() {
       this.$router.push({ name: 'modes' });
+    },
+    signIn() {
+      if(sessionStorage.getItem('user') == null){
+        signInWithPopup(auth, provider)
+          .then((result) => {
+            // This gives you a Google Access Token. You can use it to access the Google API.
+            const credential = GoogleAuthProvider.credentialFromResult(result);
+            const token = credential.accessToken;
+            sessionStorage.setItem('token', token)
+            // The signed-in user info.
+            const user = result.user;
+            sessionStorage.setItem('user', user)
+            // IdP data available using getAdditionalUserInfo(result)
+            // ...
+            this.signInOut = "Sign Out";
+          }).catch((error) => {
+            // Handle Errors here.
+            // eslint-disable-next-line
+            const errorCode = error.code;
+            // eslint-disable-next-line
+            const errorMessage = error.message;
+            // The email of the user's account used.
+            // eslint-disable-next-line
+            const email = error.customData.email;
+            // The AuthCredential type that was used.
+            // eslint-disable-next-line
+            const credential = GoogleAuthProvider.credentialFromError(error);
+            // ...
+          });
+        } else {
+          signOut(auth).then(() => {
+            // Sign-out successful.
+            this.signInOut = "Sign In";
+            sessionStorage.removeItem('token')
+            sessionStorage.removeItem('user')
+          }).catch((error) => {
+            // error happened
+            // eslint-disable-next-line
+            const errorCode = error.code;
+            // eslint-disable-next-line
+            const errorMessage = error.message;
+            // The email of the user's account used.
+            // eslint-disable-next-line
+            const email = error.customData.email;
+            // The AuthCredential type that was used.
+            // eslint-disable-next-line
+            const credential = GoogleAuthProvider.credentialFromError(error);
+          });
+        }
     }
   }
 }
