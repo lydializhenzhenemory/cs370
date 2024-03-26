@@ -15,9 +15,9 @@ CORS(app)
     db_config = json.load(config_file)
 
 with open('openai_api_key.txt', 'r') as file:
-    api_key = file.read().strip()"""
+    api_key = file.read().strip()
 
-#openai_client = OpenAI(api_key=api_key)
+openai_client = OpenAI(api_key=api_key)"""
 
 openai_client = OpenAI(api_key=os.environ.get('API_KEY'))
 
@@ -32,10 +32,10 @@ def fetch_story():
     connection = pymysql.connect(host = os.environ.get('HOST'), port = int(os.environ.get('PORT')), database = os.environ.get('DATABASE'), user = os.environ.get('USER'), password = os.environ.get('PASSWORD'))
     try:
         with connection.cursor(pymysql.cursors.DictCursor) as cursor:
-            cursor.execute("SELECT surface_story, truth FROM stories")
+            cursor.execute("SELECT surface_story, truth, id FROM stories")
             result = cursor.fetchall()
             random_story = random.choice(result) if result else None
-            return jsonify({"surface_story": random_story['surface_story']})
+            return jsonify({"surface_story": random_story['surface_story'], "story_id": random_story['id']})
     finally:
         connection.close()
 
