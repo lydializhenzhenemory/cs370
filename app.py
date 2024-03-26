@@ -19,7 +19,7 @@ with open('openai_api_key.txt', 'r') as file:
 
 openai_client = OpenAI(api_key=api_key)"""
 
-openai_client = OpenAI(api_key=os.environ.get('API_KEY'))
+openai_client = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
 
 @app.route('/')
 def home():
