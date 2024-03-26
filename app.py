@@ -59,7 +59,23 @@ def handle_question():
         if story:
             # Call OpenAI API with the user's question and the story's truth
             combined_input = f"Question: {question}\nTruth: {story['truth']}"
-            response = openai_chat(combined_input)  # TODO: Update with actual parameters needed for OpenAI API
+            prompt = ("Now you will receive a story and a question in the end of this prompt, and\
+            your job is to read the story and find out if the answer to the question is \
+            Yes or No. You can only output one of the following 4 options: 'Yes' (when the question asked matches\
+            with what happened the story), 'No' (when the question asked is relevant about the story, but\
+            the claim or its presupposition is erroneous or wrong), 'Maybe' (when the question asked is relevant to\
+            the story but the claim is ambiguous and hard to deduce from the story alone if it is right or wrong), \
+            'Irrelevant' (when the answer of the question is not explicitly included in the story, not in the form \
+            of a question, or asking something completely irrelevant), or Many (the question involves too many questions\
+            ). You should only output exactly one of the words ('Yes', 'No', 'Maybe', 'Irrelevant', 'Many‘) in all circumstances. You\
+            will never provide an explanation." + '\n' + "The story and the question are as follows: " + combined_input)
+            response = openai_client.chat.completions.create(
+                model="gpt-4",
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.5,
+                max_tokens=10,
+                seed=1234
+            ).choices[0].message.content # TODO: Update with actual parameters needed for OpenAI API
 
             # Increment the question_attempts count for the user-story pair in the user_story_attempts table
             with connection.cursor() as cursor:

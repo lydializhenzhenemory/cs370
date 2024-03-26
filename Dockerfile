@@ -41,6 +41,6 @@ ENV PASSWORD=$PASSWORD
 # webserver, with one worker process and 8 threads.
 # For environments with multiple CPU cores, increase the number of workers
 # to be equal to the cores available.
-CMD exec gunicorn --bind :8080 --workers 1 --threads 8 --timeout 120 app:app
+CMD exec gunicorn --bind :8080 --workers 1 --threads 8 --timeout 120 app:app 
 #CMD ["flask", "run", "--port=8080"]
 EXPOSE 8080
