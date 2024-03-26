@@ -33,6 +33,11 @@ ALTER TABLE stories ADD COLUMN difficulty ENUM('easy', 'medium', 'hard') NOT NUL
 ALTER TABLE user_story_attempts
 ADD COLUMN success BOOLEAN NOT NULL DEFAULT FALSE,
 ADD COLUMN guess_accuracy FLOAT DEFAULT NULL;
+ALTER TABLE user_story_attempts
+ADD COLUMN session_type ENUM('single', 'multi') NOT NULL DEFAULT 'single',
+ADD COLUMN session_id INT NULL,
+ADD FOREIGN KEY (session_id) REFERENCES multiplayer_sessions(session_id) ON DELETE SET NULL;
+
 
 
 CREATE TABLE multiplayer_sessions ( --tracking multiplayer sessions with user id, story id, whoes turn it is, and whether the session ended
@@ -43,3 +48,23 @@ CREATE TABLE multiplayer_sessions ( --tracking multiplayer sessions with user id
     FOREIGN KEY (story_id) REFERENCES stories(id) ON DELETE CASCADE,
     FOREIGN KEY (current_turn_user_id) REFERENCES users(id) ON DELETE SET NULL
 );
+
+
+CREATE TABLE game_sessions (
+    session_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NULL,
+    story_id INT NOT NULL,
+    session_type ENUM('single', 'multi') NOT NULL,
+    session_status ENUM('ongoing', 'won', 'lost') NOT NULL DEFAULT 'ongoing',
+    is_guest BOOLEAN DEFAULT FALSE,
+    expiration_time TIMESTAMP NULL,
+    current_turn_user_id INT NULL,
+    question_count INT DEFAULT 0,
+    guess_attempts INT DEFAULT 0,
+    FOREIGN KEY (story_id) REFERENCES stories(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (current_turn_user_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
+ALTER TABLE game_sessions
+ADD COLUMN last_activity TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;

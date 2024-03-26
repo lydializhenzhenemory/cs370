@@ -3,9 +3,11 @@ from flask_cors import CORS
 import random
 import json
 import pymysql.cursors
-import pymysql.cursors
 from openai import OpenAI
 from test_gpt import openai_chat
+from apscheduler.schedulers.background import BackgroundScheduler
+import pymysql
+import datetime
 
 app = Flask(__name__)
 CORS(app)
@@ -85,7 +87,9 @@ def handle_guess():
             story = cursor.fetchone()
 
         if story:
-            # Logic to determine if the guess is correct (this could be a simple string comparison or something more sophisticated)
+            # Logic to determine if the guess is correct
+            # button onclick --> guess
+                # three attempts --> if failed first two, go back to game session
             is_correct = guess.lower().strip() == story['truth'].lower().strip()
             success = int(is_correct)
 
