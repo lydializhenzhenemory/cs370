@@ -45,8 +45,10 @@ export default {
   },
   mounted() {
     const path = 'https://cs370projectbackend-0t8f5ewp.b4a.run/single_player';
+    //const path = 'http://127.0.0.1:5000/single_player';
       axios.get(path)
         .then((res) => {
+          this.typedTitle = '';
           this.typeTitle('story prompt: ' + JSON.parse(JSON.stringify(res)).data.surface_story);
           this.story_id = JSON.parse(JSON.stringify(res)).data.story_id;
         })
@@ -63,13 +65,15 @@ export default {
         if (index === title.length) {
           clearInterval(interval);
         }
-      }, 150); // Adjust the speed of typing by changing the interval time
+      }, 50); // Adjust the speed of typing by changing the interval time
     },
     submitQuestion() {
       //console.log(this.userQuestion); // For now, just log it to the console
       const path = 'https://cs370projectbackend-0t8f5ewp.b4a.run/single_player/question';
-      axios.post(path, {question: this.userQuestion, story_id: this.story_id, user_id: ''})
+      //const path = 'http://127.0.0.1:5000/single_player/question';
+      axios.post(path, {guess: this.userQuestion, story_id: this.story_id, user_id: ''})
         .then((res) => {
+          this.typedTitle = '';
           this.typeTitle('response: ' + JSON.parse(JSON.stringify(res)).data.response);
         })
         .catch((error) => {
