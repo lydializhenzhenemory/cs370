@@ -107,6 +107,14 @@ def handle_guess():
 
     return jsonify({"is_correct": success})
 
+@app.route('/api/question', methods=['POST'])
+def receive_question():
+    question = request.json.get('question')
+    # print to show we received user's question
+    print("Received question:", question)
+    # update response later when models are fine tuned
+    return jsonify({'message': 'Question received successfully: ' + question})
+
 
 if __name__ == '__main__':
     app.run(debug=True)
