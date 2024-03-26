@@ -1,7 +1,7 @@
 <template>
   <div id="game-container" :style="gameContainerStyle">
     <div id="title" :style="titleStyle">
-      <span class="typing-effect">{{ typedTitle }}</span>
+      <div class="typing-effect">{{ typedTitle }}</div>
     </div>
     <div class="question-box">
       <input
@@ -42,12 +42,14 @@ export default {
         color: 'white',
         fontSize: '1.5em',
         fontWeight: '550',
-        fontFamily: "'Anta', sans-serif"
+        fontFamily: "'Anta', sans-serif",
+        textAlign: 'center', // Center the text horizontally
+        maxWidth: '80%', // Set a maximum width for the title
       }
     };
   },
   mounted() {
-    this.typeTitle('story prompt: Jack ate a cake and died.');
+    this.typeTitle('story prompt: Jack ate a cake prjddg krnkxf jgkrsjgoiesj rogje rofi jawdoi jwqjgz ionfjnl knflker toiregnterkngawrngp ojrpweojrw3nrwejfpoand died.');
   },
   methods: {
     typeTitle(title) {
@@ -87,7 +89,6 @@ export default {
 </script>
 
 <style scoped>
-
 .response-box {
   position: absolute;
   top: 60%;
@@ -113,8 +114,8 @@ export default {
 
 .question-input {
   width: 180%;
-  padding: 1em;
-  font-size: 1em;
+  padding: 2em; /* Increased padding to make the input box taller */
+  font-size: 1.2em; /* Optional: Increase font-size if you want larger text */
   border: none;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 20px;
@@ -124,18 +125,14 @@ export default {
 }
 
 .typing-effect {
+  display: inline; /* Make the element inline-block */
   border-right: 2px solid white; /* Cursor style */
-  white-space: nowrap; /* Keeps the text in a single line */
   overflow: hidden; /* Hides the overflow text */
-  animation: typing 0.75s steps(30, end), blink 0.75s step-end infinite;
+  animation: blink 0.75s step-end infinite;
 }
 
-@keyframes typing {
-  from { width: 0; }
-  to { width: 100%; }
+.typing-effect:after {
+  animation: blink 0.75s step-end infinite;
 }
 
-@keyframes blink {
-  50% { border-color: transparent; }
-}
 </style>
