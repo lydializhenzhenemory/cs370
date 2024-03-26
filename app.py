@@ -43,7 +43,7 @@ def handle_question():
     data = request.json
     question = data.get('question')
     story_id = data.get('story_id')
-    user_id = data.get('user_id')  # Assuming you're passing the user ID
+    user_id = data.get('user_id') 
 
     connection = pymysql.connect(**db_config)
     response = None
@@ -110,6 +110,14 @@ def handle_guess():
         connection.close()
 
     return jsonify({"is_correct": success})
+
+@app.route('/api/question', methods=['POST'])
+def receive_question():
+    question = request.json.get('question')
+    # print to show we received user's question
+    print("Received question:", question)
+    # update response later when models are fine tuned
+    return jsonify({'message': 'Question received successfully: ' + question})
 
 
 if __name__ == '__main__':
