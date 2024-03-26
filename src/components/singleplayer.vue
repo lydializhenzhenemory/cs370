@@ -12,6 +12,9 @@
         @keyup.enter="submitQuestion"
       />
     </div>
+    <div class="response-box">
+      <p v-if="responseData" class="response-text">{{ responseData }}</p>
+    </div>
   </div>
 </template>
 
@@ -23,7 +26,7 @@ export default {
     return {
       userQuestion: '',
       typedTitle: '',
-      story_id: '',
+      responseData: '',
       gameContainerStyle: {
         position: 'relative',
         width: '100%',
@@ -44,15 +47,7 @@ export default {
     };
   },
   mounted() {
-    const path = 'https://cs370projectbackend-0t8f5ewp.b4a.run/single_player';
-      axios.get(path)
-        .then((res) => {
-          this.typeTitle('story prompt: ' + JSON.parse(JSON.stringify(res)).data.surface_story);
-          this.story_id = JSON.parse(JSON.stringify(res)).data.story_id;
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+    this.typeTitle('story prompt: Jack ate a cake and died.');
   },
   methods: {
     typeTitle(title) {
@@ -63,24 +58,50 @@ export default {
         if (index === title.length) {
           clearInterval(interval);
         }
-      }, 150); // Adjust the speed of typing by changing the interval time
+      }, 75); // Adjust the speed of typing by changing the interval time
     },
     submitQuestion() {
-      //console.log(this.userQuestion); // For now, just log it to the console
-      const path = 'https://cs370projectbackend-0t8f5ewp.b4a.run/single_player/question';
-      axios.post(path, {question: this.userQuestion, story_id: this.story_id, user_id: ''})
-        .then((res) => {
-          this.typeTitle('response: ' + JSON.parse(JSON.stringify(res)).data.response);
+      if (this.userQuestion.trim() !== '') {
+        // make an HTTP POST request to send the user's question to the Flask backend
+        axios.post('http://127.0.0.1:5000/api/question', { //local for now
+          question: this.userQuestion
         })
-        .catch((error) => {
-          console.error(error);
+        .then(response => {
+          console.log('Question submitted successfully');
+          // handle the response from the backend
+          this.handleResponse(response.data);
+          //clear input
+          this.userQuestion = '';
+        })
+        .catch(error => {
+          console.error('Error submitting question:', error);
         });
+      }
+    },
+    handleResponse(responseData) {
+      // update variable to store the response data
+      this.responseData = responseData;
     }
   }
 }
 </script>
 
 <style scoped>
+
+.response-box {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.response-text {
+  font-family: 'Anta', sans-serif;
+  font-size: 1em;
+  color: white; 
+}
+
 .question-box {
   position: absolute;
   bottom: 20%;
