@@ -54,7 +54,7 @@ def handle_question():
         with connection.cursor(pymysql.cursors.DictCursor) as cursor:
             # Fetch the story's truth based on the story_id from the database
             cursor.execute("SELECT surface_story, truth FROM stories WHERE id = %s", (story_id,))
-            story = cursor.fetchall()
+            story = cursor.fetchone()
 
         if story:
             # Call OpenAI API with the user's question and the story's truth
