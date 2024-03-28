@@ -11,15 +11,15 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-with open('db_config.json', 'r') as config_file:
+"""with open('db_config.json', 'r') as config_file:
     db_config = json.load(config_file)
 
 with open('openai_api_key.txt', 'r') as file:
     api_key = file.read().strip()
 
-openai_client = OpenAI(api_key=api_key)
+openai_client = OpenAI(api_key=api_key)"""
 
-#openai_client = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
+openai_client = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
 
 @app.route('/')
 def home():
@@ -47,8 +47,8 @@ def handle_question():
     story_id = data.get('story_id')
     user_id = data.get('user_id')  # Assuming you're passing the user ID
 
-    connection = pymysql.connect(**db_config)
-    #connection = pymysql.connect(host = os.environ.get('HOST'), port = int(os.environ.get('PORT')), database = os.environ.get('DATABASE'), user = os.environ.get('USER'), password = os.environ.get('PASSWORD'))
+    #connection = pymysql.connect(**db_config)
+    connection = pymysql.connect(host = os.environ.get('HOST'), port = int(os.environ.get('PORT')), database = os.environ.get('DATABASE'), user = os.environ.get('USER'), password = os.environ.get('PASSWORD'))
     response = None
     try:
         with connection.cursor(pymysql.cursors.DictCursor) as cursor:
@@ -97,8 +97,8 @@ def handle_guess():
     story_id = data.get('story_id')
     user_id = data.get('user_id')
 
-    connection = pymysql.connect(**db_config)
-    #connection = pymysql.connect(host = os.environ.get('HOST'), port = int(os.environ.get('PORT')), database = os.environ.get('DATABASE'), user = os.environ.get('USER'), password = os.environ.get('PASSWORD'))
+    #connection = pymysql.connect(**db_config)
+    connection = pymysql.connect(host = os.environ.get('HOST'), port = int(os.environ.get('PORT')), database = os.environ.get('DATABASE'), user = os.environ.get('USER'), password = os.environ.get('PASSWORD'))
     success = None
     try:
         with connection.cursor(pymysql.cursors.DictCursor) as cursor:
