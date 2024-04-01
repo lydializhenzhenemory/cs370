@@ -95,27 +95,22 @@ export default {
       }
     }, 75); // Adjust the speed of typing by changing the interval time
   },
-    submitQuestion() {
-      if (this.userQuestion.trim() !== '') {
-        // make an HTTP POST request to send the user's question to the Flask backend
-        axios.post('http://127.0.0.1:5000/api/question', { //local for now
-          question: this.userQuestion
+  submitQuestion() {
+      //console.log(this.userQuestion); // For now, just log it to the console
+      const path = 'https://cs370projectbackend-0t8f5ewp.b4a.run/single_player/question';
+      axios.post(path, {question: this.userQuestion, story_id: this.story_id, user_id: ''})
+      .then((response) => {
+          const responseData = JSON.parse(JSON.stringify(response.data));
+          if (responseData.error) {
+            this.response = responseData.error;
+          } else {
+            this.responseData = `User Question: ${this.userQuestion}, Response: ${responseData.response}`;
+            this.userQuestion = '';
+          }
         })
-        .then(response => {
-          console.log('Question submitted successfully');
-          // handle the response from the backend
-          this.handleResponse(response.data);
-          //clear input
-          this.userQuestion = '';
-        })
-        .catch(error => {
-          console.error('Error submitting question:', error);
+        .catch((error) => {
+          console.error(error);
         });
-      }
-    },
-    handleResponse(responseData) {
-      // update variable to store the response data
-      this.responseData = responseData;
     }
   }
 }
