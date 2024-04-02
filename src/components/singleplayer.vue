@@ -25,7 +25,7 @@ export default {
   name: 'DetectiveGame',
   data() {
     return {
-      questionLimit: 7, //change later
+      questionLimit: 10, //change later
       questionLog: [], //array for question log
       userQuestion: '',
       typedTitle: '',
