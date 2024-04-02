@@ -129,6 +129,37 @@ def handle_guess():
 
     return jsonify({"is_correct": success})
 
+@app.route('/api/store_user', methods=['POST'])
+def store_user():
+    user_data = request.json
+    #connection = pymysql.connect(**db_config)
+    connection = pymysql.connect(host = os.environ.get('HOST'), port = int(os.environ.get('PORT')), database = os.environ.get('DATABASE'), user = os.environ.get('USER'), password = os.environ.get('PASSWORD'))
+    try:
+        with connection.cursor() as cursor:
+            # Check if the user already exists in the database
+            cursor.execute("SELECT id FROM users WHERE email = %s", (user_data['email'],))
+            existing_user = cursor.fetchone()
+            if existing_user:
+                # If user exists, update their info
+                cursor.execute("""
+                    UPDATE users 
+                    SET username = %s 
+                    WHERE email = %s
+                """, (user_data['name'], user_data['email']))
+            else:
+                # If not, insert the new user data
+                cursor.execute("""
+                    INSERT INTO users (username, email) 
+                    VALUES (%s, %s)
+                """, (user_data['name'], user_data['email']))
+            connection.commit()
+    except pymysql.MySQLError as e:
+        connection.rollback()
+        return jsonify({"status": "error", "message": str(e)}), 500
+    finally:
+        connection.close()
+
+    return jsonify({"status": "success", "message": "User data stored successfully."})
 
 if __name__ == '__main__':
     app.run(debug=True)
