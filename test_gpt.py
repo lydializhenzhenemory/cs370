@@ -8,16 +8,17 @@ def openai_chat(question, story):
     with open('openai_api_key.txt', 'r') as file:
         api_key = file.read().strip()
 
-    prompt = ("Now you will receive a story and a question in the end of this prompt, and\
-your job is to read the story and find out if the answer to the question is \
-Yes or No. You can only output one of the following 4 options: 'Yes' (when the question asked matches\
-with what happened the story), 'No' (when the question asked is relevant about the story, but\
-the claim or its presupposition is erroneous or wrong), 'Maybe' (when the question asked is relevant to\
-the story but the claim is ambiguous and hard to deduce from the story alone if it is right or wrong), \
-'Irrelevant' (when the answer of the question is not explicitly included in the story, not in the form \
-of a question, or asking something completely irrelevant), or Many (the question involves too many questions\
-). You should only output exactly one of the words ('Yes', 'No', 'Maybe', 'Irrelevant', 'Many‘) in all circumstances. You\
-will never provide an explanation." + '\n' + "The story and the question are as follows: " + "Story: " + story + '\n' + "Question: " + question + "")
+    prompt = ("Now you will receive a story and a question in the end of this prompt, and"
+              "your job is to read the story and find out if the answer to the question is "
+              "Yes or No. You can only output one of the following 4 options: 'Yes' (when the question asked matches"
+              "with what happened the story), 'No' (when the question asked is relevant about the story, but"
+              "the claim or its presupposition is erroneous or wrong), 'Maybe' (when the question asked is relevant to"
+              "the story but the claim is ambiguous and hard to deduce from the story alone if it is right or wrong), "
+              "'Irrelevant' (when the answer of the question is not explicitly indicated in the story, not in the form "
+              "of a question, or asking something completely irrelevant), or Many (the question involves too many questions"
+              "). Note if the question is in any form related to the plots of the story, you should output 'Maybe'."
+              " You should only output exactly one of the words ('Yes', 'No', 'Maybe', 'Irrelevant', 'Many‘) in all circumstances. You"
+              "will never provide an explanation." + '\n' + "The story and the question are as follows: " + "Story: " + '\n' + story + '\n' + "Question: " + question + "")
 
     client = OpenAI(api_key=api_key)
 
@@ -26,7 +27,7 @@ will never provide an explanation." + '\n' + "The story and the question are as 
         #model="gpt-3.5-turbo",
         model="gpt-4",
         messages=[{"role": "user", "content": prompt}],
-        temperature=0.5,
+        temperature=0.8,
         max_tokens=10,
         seed=1234
     )
