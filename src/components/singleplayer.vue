@@ -65,16 +65,9 @@ export default {
     }
   },
   mounted() {
-  if (sessionStorage.getItem('pageVisited')) {
-    this.typedTitle = localStorage.getItem('typedTitle');
-    this.story_id = localStorage.getItem('storyId');
-    this.questionLog = JSON.parse(localStorage.getItem('questionLog')) || [];
-    this.questionLog.length = 0; // Set the length of questionLog to 0
-  } else {
     this.fetchNewPrompt();
-  }
-  sessionStorage.setItem('pageVisited', 'true');
-},
+    sessionStorage.setItem('pageVisited', 'true');
+  },
   methods: {
     fetchNewPrompt() {
       this.questionLog = [];
@@ -141,7 +134,6 @@ export default {
   }
 }
 </script>
-
 <style scoped>
 .question-box {
   position: absolute;
