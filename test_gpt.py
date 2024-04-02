@@ -8,7 +8,7 @@ def openai_chat(question, story):
     with open('openai_api_key.txt', 'r') as file:
         api_key = file.read().strip()
 
-    prompt = ("Now you will receive a story and a question in the end of this prompt, and"
+    prompt = ("Now you will receive a story and a yes-or-no question in the end of this prompt, and"
               "your job is to read the story and find out if the answer to the question is "
               "Yes or No. You can only output one of the following 4 options: 'Yes' (when the question asked matches"
               "with what happened the story), 'No' (when the question asked is relevant about the story, but"
