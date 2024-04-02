@@ -1,6 +1,5 @@
 -- Active: 1710687991956@@detectaive.cj0cq200ykmx.us-east-2.rds.amazonaws.com@3306@detectaive
 CREATE DATABASE IF NOT EXISTS DetectAIveDB;
-USE DetectAIveDB;
 
 CREATE TABLE stories (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -68,3 +67,28 @@ CREATE TABLE game_sessions (
 
 ALTER TABLE game_sessions
 ADD COLUMN last_activity TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+
+
+
+CREATE TABLE daily_challenge (
+    challenge_date DATE PRIMARY KEY,
+    story_id INT,
+    FOREIGN KEY (story_id) REFERENCES stories(id)
+);
+
+
+CREATE TABLE challenge_attempts (
+    attempt_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    story_id INT,
+    challenge_date DATE,
+    time_taken_seconds INT,
+    questions_attempted INT,
+    success TINYINT(1),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (story_id) REFERENCES stories(id),
+    FOREIGN KEY (challenge_date) REFERENCES daily_challenge(challenge_date)
+);
+
+ALTER TABLE users AUTO_INCREMENT = 1;
+DELETE FROM users WHERE id=102;
