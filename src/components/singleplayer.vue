@@ -201,7 +201,7 @@ export default {
   width: 90%;
   overflow-y: auto;
   padding: 10px;
-  background-color: gray; 
+  background-color: transparent; 
   border-radius: 10px;
   max-height: 20%;
   overflow-y: auto; /*enables vertical scrolling when content overflows */
@@ -225,19 +225,21 @@ export default {
 
 .fetch-prompt-button {
   position: absolute;
-  bottom: 5%;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 5%;
+  right: 5%;
+  transform: translateX(0%);
   padding: 10px 20px;
-  background-color: red;
-  color: white; 
+  background-color: rgb(53, 68, 98);
+  color: white;
   border: none;
   border-radius: 5px;
   font-family: 'Anta', sans-serif;
-  font-size: 1em; 
+  font-size: 1em;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Added shadow */
 }
+
 
 </style>
 
