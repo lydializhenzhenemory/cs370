@@ -15,9 +15,10 @@ def openai_chat(question, story):
               "the claim or its presupposition is erroneous or wrong), 'Maybe' (when the question asked is relevant to"
               "the story but the claim is ambiguous and hard to deduce from the story alone if it is right or wrong), "
               "'Irrelevant' (when the answer of the question is not explicitly indicated in the story, not in the form "
-              "of a question, or asking something completely irrelevant), or Many (the question involves too many questions"
+              "of a yes-or-no question, or asking something completely irrelevant), or 'Many' (the question involves too many questions"
               "). Note if the question is in any form related to the plots of the story, you should output 'Maybe'."
-              " You should only output exactly one of the words ('Yes', 'No', 'Maybe', 'Irrelevant', 'Many‘) in all circumstances. You"
+              "Examine the story and the question carefully and make your decision. For your output,"
+              "You should only output exactly one of the words ('Yes', 'No', 'Maybe', 'Irrelevant', 'Many‘) in all circumstances. You"
               "will never provide an explanation." + '\n' + "The story and the question are as follows: " + "Story: " + '\n' + story + '\n' + "Question: " + question + "")
 
     client = OpenAI(api_key=api_key)
