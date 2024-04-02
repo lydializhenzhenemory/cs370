@@ -2,7 +2,6 @@
   <div id="game-container" :style="gameContainerStyle">
     <div id="title" :style="titleStyle">
       <div class="typing-effect">{{ typedTitle }}</div>
-      <div class="typing-effect">{{ typedTitle }}</div>
     </div>
     <div v-if="!questionLimitReached" class="question-box">
       <input
@@ -17,9 +16,6 @@
       <p v-for="(log, index) in questionLog" :key="index" class="log-item">{{ log }}</p>
     </div>
     <button class="fetch-prompt-button" @click="fetchNewPromptAndReset">Play New Game</button>
-    <div class="response-box">
-      <p v-if="responseData" class="response-text">{{ responseData }}</p>
-    </div>
   </div>
 </template>
 
@@ -33,7 +29,6 @@ export default {
       questionLog: [], //array for question log
       userQuestion: '',
       typedTitle: '',
-      responseData: '',
       responseData: '',
       gameContainerStyle: {
         position: 'relative',
@@ -50,9 +45,6 @@ export default {
         color: 'white',
         fontSize: '1.5em',
         fontWeight: '550',
-        fontFamily: "'Anta', sans-serif",
-        textAlign: 'center', // Center the text horizontally
-        maxWidth: '80%', // Set a maximum width for the title
         fontFamily: "'Anta', sans-serif",
         textAlign: 'center', // Center the text horizontally
         maxWidth: '80%', // Set a maximum width for the title
@@ -91,39 +83,7 @@ export default {
     this.questionLog = []; //makes sure that log is persistent with story prompt
     this.questionCount = 0;
 
-  // Check if the page has been visited in the same session
-  if (sessionStorage.getItem('pageVisited')) {
-    // The page has been refreshed, load the prompt from localStorage
-    this.typedTitle = localStorage.getItem('typedTitle');
-    this.story_id = localStorage.getItem('storyId');
-  } else {
-    // The page is visited for the first time in this session, fetch a new prompt
-    this.fetchNewPrompt();
-  }
-
-  // Set the flag in sessionStorage to indicate that the page has been visited
-  sessionStorage.setItem('pageVisited', 'true');
-},
-
-  methods: {
-    handlePageUnload() {
-    localStorage.removeItem('typedTitle');
-    localStorage.removeItem('storyId');
-  },
-  fetchNewPrompt() {
     const path = 'https://cs370projectbackend-0t8f5ewp.b4a.run/single_player';
-    axios.get(path)
-      .then((res) => {
-        const prompt = 'story prompt: ' + res.data.surface_story;
-        this.story_id = res.data.story_id;
-        this.typeTitle(prompt); // Call typeTitle to create the typing effect
-        // Store the fetched prompt and story ID in localStorage
-        localStorage.setItem('typedTitle', prompt);
-        localStorage.setItem('storyId', this.story_id);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
     axios.get(path)
       .then((res) => {
         const prompt = 'story prompt: ' + res.data.surface_story;
@@ -150,19 +110,6 @@ export default {
     }, 75); // Adjust the speed of typing by changing the interval time
   },
   submitQuestion() {
-    let index = 0;
-    const interval = setInterval(() => {
-      this.typedTitle += title[index];
-      index++;
-      if (index === title.length) {
-        clearInterval(interval);
-        // When the title is finished typing, set it in localStorage
-        localStorage.setItem('typedTitle', this.typedTitle);
-      }
-    }, 75); // Adjust the speed of typing by changing the interval time
-  },
-  submitQuestion() {
-      //console.log(this.userQuestion); // For now, just log it to the console
       const path = 'https://cs370projectbackend-0t8f5ewp.b4a.run/single_player/question';
       axios.post(path, { question: this.userQuestion, story_id: this.story_id, user_id: '' })
         .then((response) => {
@@ -179,15 +126,6 @@ export default {
             this.scrollToBottom(); //need to do this after adding a new log entry
 
             //reset user input
-            this.userQuestion = '';
-          }
-      axios.post(path, {question: this.userQuestion, story_id: this.story_id, user_id: ''})
-      .then((response) => {
-          const responseData = JSON.parse(JSON.stringify(response.data));
-          if (responseData.error) {
-            this.response = responseData.error;
-          } else {
-            this.responseData = `User Question: ${this.userQuestion}, Response: ${responseData.response}`;
             this.userQuestion = '';
           }
         })
@@ -223,20 +161,6 @@ export default {
 </script>
 
 <style scoped>
-.response-box {
-  position: absolute;
-  top: 60%;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
-}
-
-.response-text {
-  font-family: 'Anta', sans-serif;
-  font-size: 1em;
-  color: white; 
-}
-
 .question-box {
   position: absolute;
   bottom: 12%;
@@ -248,8 +172,6 @@ export default {
 
 .question-input {
   width: 180%;
-  padding: 2em; /* Increased padding to make the input box taller */
-  font-size: 1.2em; /* Optional: Increase font-size if you want larger text */
   padding: 2em; /* Increased padding to make the input box taller */
   font-size: 1.2em; /* Optional: Increase font-size if you want larger text */
   border: none;
