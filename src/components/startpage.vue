@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
 
 const provider = new GoogleAuthProvider();
@@ -109,6 +110,21 @@ export default {
             // IdP data available using getAdditionalUserInfo(result)
             // ...
             this.signInOut = "Sign Out";
+
+            const userData = {
+              uid: user.uid,
+              name: user.displayName,
+              email: user.email,
+            };
+            // store user information in the backend 
+            axios.post('http://127.0.0.1:5000/api/store_user', userData)
+              .then(response => {
+                console.log('User data sent to backend:', response.data);
+              })
+              .catch(error => {
+                console.error('Error sending user data:', error);
+              });
+
           }).catch((error) => {
             // Handle Errors here.
             // eslint-disable-next-line
@@ -137,7 +153,7 @@ export default {
             const errorMessage = error.message;
             // The email of the user's account used.
             // eslint-disable-next-line
-            const email = error.customData.email;
+            const email = error.customData.email;ß
             // The AuthCredential type that was used.
             // eslint-disable-next-line
             const credential = GoogleAuthProvider.credentialFromError(error);
