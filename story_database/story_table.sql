@@ -90,5 +90,5 @@ CREATE TABLE challenge_attempts (
     FOREIGN KEY (challenge_date) REFERENCES daily_challenge(challenge_date)
 );
 
-ALTER TABLE users AUTO_INCREMENT = 1;
-DELETE FROM users WHERE id=102;
+ALTER TABLE stories AUTO_INCREMENT = 1;
+DELETE FROM stories WHERE id>100;
