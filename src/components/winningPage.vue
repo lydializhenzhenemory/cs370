@@ -32,11 +32,11 @@ export default {
     };
   },
   methods: {
-    playAgain() {
-      // Use Vue Router to navigate to the /modes path
-      this.$router.push('/modes');
+      playAgain() {
+        // Use Vue Router to navigate to the /modes path
+        this.$router.push('/modes');
+      }
     }
-  }
 }
 </script>
 
@@ -57,7 +57,6 @@ export default {
   transition: background-color 0.3s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Added shadow */
 }
-
 .play-again-button:hover {
   background-color: #35485d;
 }

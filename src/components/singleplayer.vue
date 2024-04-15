@@ -93,9 +93,10 @@ export default {
   mounted() {
     //this data stored in each session so refreshing wont affeect it
     if (sessionStorage.getItem('pageVisited')) {
-      this.typedTitle = localStorage.getItem('typedTitle');
-      this.story_id = localStorage.getItem('storyId');
-      this.questionLog = JSON.parse(localStorage.getItem('questionLog')) || [];
+
+      this.typedTitle = sessionStorage.getItem('typedTitle');
+      this.story_id = sessionStorage.getItem('storyId');
+      this.questionLog = JSON.parse(sessionStorage.getItem('questionLog')) || [];
   } else {
     this.fetchNewPrompt();
   }
@@ -112,8 +113,9 @@ export default {
           const prompt = 'story prompt: ' + res.data.surface_story;
           this.story_id = res.data.story_id;
           this.typeTitle(prompt);
-          localStorage.setItem('typedTitle', prompt);
-          localStorage.setItem('storyId', this.story_id);
+          sessionStorage.setItem('typedTitle', prompt);
+          sessionStorage.setItem('storyId', this.story_id);
+
         })
         .catch((error) => {
           console.error(error);
@@ -126,7 +128,7 @@ export default {
         index++;
         if (index === title.length) {
           clearInterval(interval);
-          localStorage.setItem('typedTitle', this.typedTitle);
+          sessionStorage.setItem('typedTitle', this.typedTitle);
         }
       }, 75);
     },
@@ -149,7 +151,7 @@ export default {
         });
     },
     saveQuestionLog() {
-      localStorage.setItem('questionLog', JSON.stringify(this.questionLog));
+      sessionStorage.setItem('questionLog', JSON.stringify(this.questionLog));
     },
     scrollToBottom() {
       this.$nextTick(() => {
@@ -160,9 +162,9 @@ export default {
       this.guessAttempts = 3;
       sessionStorage.setItem('guessAttempts', this.guessAttempts);
 
-      localStorage.removeItem('typedTitle');
-      localStorage.removeItem('storyId');
-      localStorage.removeItem('questionLog');
+      sessionStorage.removeItem('typedTitle');
+      sessionStorage.removeItem('storyId');
+      sessionStorage.removeItem('questionLog');
       this.questionLog = [];
       this.userQuestion = '';
       this.typedTitle = '';
@@ -180,7 +182,7 @@ export default {
       this.guess = '';
     },
     submitGuess() {
-      const path = 'http://127.0.0.1:5000/single_player/guess'; //local for now, change this!!!
+      const path = 'https://cs370projectbackend-0t8f5ewp.b4a.run/single_player/guess';
       axios.post(path, {
         guess: this.guess,
         story_id: this.story_id,
@@ -190,9 +192,8 @@ export default {
       .then(response => {
         console.log('Guess submitted successfully:', response.data);
         this.closeGuessModal(); //closes modal after guess, update later if needed
-
         //must decrement guess attempts if guess is incorrect
-        if (response.data.is_correct === 'incorrect') {
+        if (response.data.is_correct === 'Incorrect') {
           this.guessAttempts--;
           sessionStorage.setItem('guessAttempts', this.guessAttempts);
         }
@@ -200,9 +201,10 @@ export default {
           this.guessAttempts--;
           sessionStorage.setItem('guessAttempts', this.guessAttempts);
         }
-
         this.guessResponse = response.data.is_correct;
-
+        if (response.data.is_correct === 'Correct') {
+          this.$router.push('/modes/singleplayer/winning');
+        }
       })
       .catch(error => {
         console.error('Error submitting guess:', error);
@@ -291,7 +293,6 @@ export default {
   transition: background-color 0.3s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
-
 /* modal styles*/
 .modal {
   display: block;
@@ -304,7 +305,6 @@ export default {
   overflow: auto;
   background-color: rgba(0,0,0,0.5);
 }
-
 .modal-content {
   background-color: white;
   margin: 15% auto;
@@ -312,27 +312,23 @@ export default {
   border: 1px solid #888;
   width: 80%;
 }
-
 .close {
   color: #aaa;
   float: right;
   font-size: 28px;
   font-weight: bold;
 }
-
 .close:hover,
 .close:focus {
   color: black;
   text-decoration: none;
   cursor: pointer;
 }
-
 .guess-textarea {
   width: 100%;
   height: 100px;
   margin-bottom: 10px;
 }
-
 .submit-guess-button {
   background-color: greenyellow;
   color: white;
@@ -359,7 +355,6 @@ export default {
   border-radius: 16px;
   transition: background-color 0.3s ease;
 }
-
 .guess-button:hover {
   background-color: darkolivegreen; 
 }
@@ -373,4 +368,5 @@ export default {
   font-weight: bold;
   color: white;
 }
+
 </style>
