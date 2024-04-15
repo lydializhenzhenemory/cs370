@@ -32,7 +32,11 @@ export default {
     };
   },
   methods: {
-  }
+      playAgain() {
+        // Use Vue Router to navigate to the /modes path
+        this.$router.push('/modes');
+      }
+    }
 }
 </script>
 

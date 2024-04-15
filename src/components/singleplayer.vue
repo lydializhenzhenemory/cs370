@@ -129,6 +129,7 @@ export default {
       }, 75);
     },
     submitQuestion() {
+      //const path = 'http://127.0.0.1:5000/single_player/question';
       const path = 'https://cs370projectbackend-0t8f5ewp.b4a.run/single_player/question';
       axios.post(path, { question: this.userQuestion, story_id: this.story_id, user_id: '' })
         .then((response) => {
@@ -178,7 +179,8 @@ export default {
       this.guess = '';
     },
     submitGuess() {
-      const path = 'http://127.0.0.1:5000/single_player/guess'; //local for now, change this!!!
+      //const path = 'http://127.0.0.1:5000/single_player/guess'; //local for now, change this!!!
+      const path = 'http://cs370projectbackend-0t8f5ewp.b4a.run/single_player/guess';
       axios.post(path, {
         guess: this.guess,
         story_id: this.story_id,
@@ -189,7 +191,7 @@ export default {
         console.log('Guess submitted successfully:', response.data);
         this.closeGuessModal(); //closes modal after guess, update later if needed
         //must decrement guess attempts if guess is incorrect
-        if (response.data.is_correct === 'incorrect') {
+        if (response.data.is_correct === 'Incorrect') {
           this.guessAttempts--;
           sessionStorage.setItem('guessAttempts', this.guessAttempts);
         }
@@ -198,6 +200,9 @@ export default {
           sessionStorage.setItem('guessAttempts', this.guessAttempts);
         }
         this.guessResponse = response.data.is_correct;
+        if (response.data.is_correct === 'Correct') {
+          this.$router.push('/modes/singleplayer/winning');
+        }
       })
       .catch(error => {
         console.error('Error submitting guess:', error);
