@@ -15,9 +15,7 @@ CORS(app)
     db_config = json.load(config_file)
 
 with open('openai_api_key.txt', 'r') as file:
-    api_key = file.read().strip()
-
-openai_client = OpenAI(api_key=api_key)"""
+    api_key = file.read().strip()"""
 
 openai_client = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
 
