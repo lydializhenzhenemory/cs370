@@ -180,7 +180,7 @@ export default {
     },
     submitGuess() {
       //const path = 'http://127.0.0.1:5000/single_player/guess'; //local for now, change this!!!
-      const path = 'http://cs370projectbackend-0t8f5ewp.b4a.run/single_player/guess';
+      const path = 'https://cs370projectbackend-0t8f5ewp.b4a.run/single_player/guess';
       axios.post(path, {
         guess: this.guess,
         story_id: this.story_id,
