@@ -59,7 +59,7 @@ def handle_question():
         if story:
             # Call OpenAI API with the user's question and the story's truth
             combined_input = f"Question: {question}\nTruth: {story['truth']}"
-            response = openai_chat(combined_input)  # TODO: Update with actual parameters needed for OpenAI API
+            response = openai_chat(question, story['truth'])  # TODO: Update with actual parameters needed for OpenAI API
 
             # Increment the question_attempts count for the user-story pair in the user_story_attempts table
             with connection.cursor() as cursor:
