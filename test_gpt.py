@@ -7,6 +7,7 @@ import os
 def openai_chat(question, story):
     """with open('openai_api_key.txt', 'r') as file:
         api_key = file.read().strip()"""
+    
     client = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
 
     prompt = ("Now you will receive a story and a yes-or-no question in the end of this prompt, and"
@@ -37,7 +38,9 @@ def openai_chat(question, story):
 def win_or_lose(user_answer, story, surface_prompt):
     """with open('openai_api_key.txt', 'r') as file:
         api_key = file.read().strip()"""
+    
     client = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
+
     prompt = ("Now I will give you a surface prompt, a story, and an answer. Your job is to"
               "determine if the answer about the story is correct or not and if it is the root cause of what"
               "happened in the surface prompt. Notice you can only output the exact word of either \'Correct\' or \'Incorrect\'. "
