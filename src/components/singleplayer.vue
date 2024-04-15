@@ -85,6 +85,7 @@ export default {
         this.$router.push('/modes/singleplayer/losing');
         //reset guess attempts and other game state when redirecting to losing page
         this.fetchNewPromptAndReset();
+
         //sessionStorage.setItem('pageVisited', 'false');
       }
     }
@@ -92,12 +93,14 @@ export default {
   mounted() {
     //this data stored in each session so refreshing wont affeect it
     if (sessionStorage.getItem('pageVisited')) {
+
       this.typedTitle = sessionStorage.getItem('typedTitle');
       this.story_id = sessionStorage.getItem('storyId');
       this.questionLog = JSON.parse(sessionStorage.getItem('questionLog')) || [];
   } else {
     this.fetchNewPrompt();
   }
+
   sessionStorage.setItem('pageVisited', 'true');
   },
   methods: {
@@ -112,6 +115,7 @@ export default {
           this.typeTitle(prompt);
           sessionStorage.setItem('typedTitle', prompt);
           sessionStorage.setItem('storyId', this.story_id);
+
         })
         .catch((error) => {
           console.error(error);
@@ -129,7 +133,6 @@ export default {
       }, 75);
     },
     submitQuestion() {
-      //const path = 'http://127.0.0.1:5000/single_player/question';
       const path = 'https://cs370projectbackend-0t8f5ewp.b4a.run/single_player/question';
       axios.post(path, { question: this.userQuestion, story_id: this.story_id, user_id: '' })
         .then((response) => {
@@ -179,7 +182,6 @@ export default {
       this.guess = '';
     },
     submitGuess() {
-      //const path = 'http://127.0.0.1:5000/single_player/guess'; //local for now, change this!!!
       const path = 'https://cs370projectbackend-0t8f5ewp.b4a.run/single_player/guess';
       axios.post(path, {
         guess: this.guess,
@@ -366,4 +368,5 @@ export default {
   font-weight: bold;
   color: white;
 }
+
 </style>

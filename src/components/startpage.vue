@@ -117,7 +117,9 @@ export default {
               email: user.email,
             };
             // store user information in the backend 
+            
             axios.post('https://cs370projectbackend-0t8f5ewp.b4a.run/api/store_user', userData)
+
               .then(response => {
                 console.log('User data sent to backend:', response.data);
               })
