@@ -16,6 +16,19 @@
       <p v-for="(log, index) in questionLog" :key="index" class="log-item">{{ log }}</p>
     </div>
     <button class="fetch-prompt-button" @click="fetchNewPromptAndReset">Change prompt</button>
+    <button class="guess-button" @click="openGuessModal">Make a Guess</button>
+    <!-- modal for guess -->
+    <div class="modal" v-if="showGuessModal">
+      <div class="modal-content">
+        <span class="close" @click="closeGuessModal">&times;</span>
+        <h2>Make a Guess</h2>
+        <textarea v-model="guess" class="guess-textarea" placeholder="Enter your guess"></textarea>
+        <button class="submit-guess-button" @click="submitGuess">Submit Guess</button>
+      </div>
+    </div>
+    <div v-if="guessResponse" class="guess-response">
+      {{ guessResponse }}
+    </div>
   </div>
 </template>
 
@@ -26,6 +39,10 @@ export default {
   name: 'DetectiveGame',
   data() {
     return {
+      guessResponse: '',
+      guessAttempts: sessionStorage.getItem('guessAttempts') || 3, //change later
+      guess: '',
+      showGuessModal: false,
       questionLimit: 10,
       questionLog: [],
       userQuestion: '',
@@ -58,15 +75,30 @@ export default {
     }
   },
   watch: {
-    questionLimitReached(newVal) {
+    questionLimitReached(newVal) { //remove this later, we want user to be able to use their guesses despite question limit being reached
       if (newVal) {
         this.$router.push('/modes/singleplayer/losing');
+      }
+    },
+    guessAttempts(newVal) {
+      if (newVal === 0) {
+        this.$router.push('/modes/singleplayer/losing');
+        //reset guess attempts and other game state when redirecting to losing page
+        this.fetchNewPromptAndReset();
+        //sessionStorage.setItem('pageVisited', 'false');
       }
     }
   },
   mounted() {
+    //this data stored in each session so refreshing wont affeect it
+    if (sessionStorage.getItem('pageVisited')) {
+      this.typedTitle = sessionStorage.getItem('typedTitle');
+      this.story_id = sessionStorage.getItem('storyId');
+      this.questionLog = JSON.parse(sessionStorage.getItem('questionLog')) || [];
+  } else {
     this.fetchNewPrompt();
-    sessionStorage.setItem('pageVisited', 'true');
+  }
+  sessionStorage.setItem('pageVisited', 'true');
   },
   methods: {
     fetchNewPrompt() {
@@ -123,13 +155,54 @@ export default {
       });
     },
     fetchNewPromptAndReset() {
+      this.guessAttempts = 3;
+      sessionStorage.setItem('guessAttempts', this.guessAttempts);
+
       sessionStorage.removeItem('typedTitle');
       sessionStorage.removeItem('storyId');
       sessionStorage.removeItem('questionLog');
       this.questionLog = [];
       this.userQuestion = '';
       this.typedTitle = '';
+      this.guessResponse = '';
       this.fetchNewPrompt();
+    },
+    openGuessModal() {
+      console.log("Opening Guess Modal");
+      this.showGuessModal = true;
+      this.guess = '';
+    },
+    closeGuessModal() {
+      console.log("Closing Guess Modal");
+      this.showGuessModal = false;
+      this.guess = '';
+    },
+    submitGuess() {
+      const path = 'http://127.0.0.1:5000/single_player/guess'; //local for now, change this!!!
+      axios.post(path, {
+        guess: this.guess,
+        story_id: this.story_id,
+        surfacePrompt: this.typedTitle,
+        user_id: '' 
+      })
+      .then(response => {
+        console.log('Guess submitted successfully:', response.data);
+        this.closeGuessModal(); //closes modal after guess, update later if needed
+        //must decrement guess attempts if guess is incorrect
+        if (response.data.is_correct === 'incorrect') {
+          this.guessAttempts--;
+          sessionStorage.setItem('guessAttempts', this.guessAttempts);
+        }
+        if (response.data.is_correct === 'Unexpected response. Prompt failed') { //we want to reduce this later, this should not count as a guess, fix later
+          this.guessAttempts--;
+          sessionStorage.setItem('guessAttempts', this.guessAttempts);
+        }
+        this.guessResponse = response.data.is_correct;
+      })
+      .catch(error => {
+        console.error('Error submitting guess:', error);
+        this.closeGuessModal();
+      });
     }
   }
 }
@@ -212,5 +285,80 @@ export default {
   cursor: pointer;
   transition: background-color 0.3s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+/* modal styles*/
+.modal {
+  display: block;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.5);
+}
+.modal-content {
+  background-color: white;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+.guess-textarea {
+  width: 100%;
+  height: 100px;
+  margin-bottom: 10px;
+}
+.submit-guess-button {
+  background-color: greenyellow;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+/*button starts here*/
+.guess-button {
+  position: absolute;
+  bottom: 160px;
+  right: 20px;
+  background-color: yellowgreen;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 16px;
+  transition: background-color 0.3s ease;
+}
+.guess-button:hover {
+  background-color: darkolivegreen; 
+}
+/*guess response, change later */
+.guess-response {
+  position: absolute;
+  top: 50%;
+  left: 90%;
+  transform: translate(-50%, -50%);
+  font-size: 2em;
+  font-weight: bold;
+  color: white;
 }
 </style>
