@@ -5,7 +5,7 @@ import json
 import pymysql.cursors
 import pymysql.cursors
 from openai import OpenAI
-from test_gpt import openai_chat
+from test_gpt import openai_chat, win_or_lose
 import os
 
 app = Flask(__name__)
@@ -58,24 +58,8 @@ def handle_question():
 
         if story:
             # Call OpenAI API with the user's question and the story's truth
-            combined_input = f"Question: {question}\n Surface Story: {story['surface_story']}\n Truth: {story['truth']}"
-            prompt = ("Now you will receive a story and a question in the end of this prompt, and\
-            your job is to read the story and find out if the answer to the question is \
-            Yes or No. You can only output one of the following 4 options: 'Yes' (when the question asked matches\
-            with what happened the story), 'No' (when the question asked is relevant about the story, but\
-            the claim or its presupposition is erroneous or wrong), 'Maybe' (when the question asked is relevant to\
-            the story but the claim is ambiguous and hard to deduce from the story alone if it is right or wrong), \
-            'Irrelevant' (when the answer of the question is not explicitly included in the story, not in the form \
-            of a question, or asking something completely irrelevant), or Many (the question involves too many questions\
-            ). You should only output exactly one of the words ('Yes', 'No', 'Maybe', 'Irrelevant', 'Many‘) in all circumstances. You\
-            will never provide an explanation." + '\n' + "The story and the question are as follows: " + combined_input)
-            response = openai_client.chat.completions.create(
-                model="gpt-4",
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0.5,
-                max_tokens=10,
-                seed=1234
-            ).choices[0].message.content # TODO: Update with actual parameters needed for OpenAI API
+            combined_input = f"Question: {question}\nTruth: {story['truth']}"
+            response = openai_chat(combined_input)  # TODO: Update with actual parameters needed for OpenAI API
 
             # Increment the question_attempts count for the user-story pair in the user_story_attempts table
             with connection.cursor() as cursor:
@@ -95,6 +79,7 @@ def handle_guess():
     data = request.json
     guess = data.get('guess')
     story_id = data.get('story_id')
+    surface_prompt = data.get('surfacePrompt')
     user_id = data.get('user_id')
 
     #connection = pymysql.connect(**db_config)
@@ -105,21 +90,30 @@ def handle_guess():
             # Fetch the story's truth for validation
             cursor.execute("SELECT truth FROM stories WHERE id = %s", (story_id,))
             story = cursor.fetchone()
+            print(story['truth'])
 
         if story:
-            # Logic to determine if the guess is correct (this could be a simple string comparison or something more sophisticated)
-            is_correct = guess.lower().strip() == story['truth'].lower().strip()
-            success = int(is_correct)
+            # Logic to determine if the guess is correct
+            result = win_or_lose(guess, story['truth'], surface_prompt)
 
+            if result == "Correct" or result == "Incorrect":
+                return jsonify({"is_correct": result})
+            else:
+                return jsonify({"is_correct": "Unexpected response. Prompt failed"})
+
+            """"
             # Update the user_story_attempts table with the result of the guess
             with connection.cursor() as cursor:
-                cursor.execute("""
+                cursor.execute(
                     INSERT INTO user_story_attempts (user_id, story_id, question_attempts, success) 
                     VALUES (%s, %s, 1, %s) 
                     ON DUPLICATE KEY UPDATE 
                         question_attempts = question_attempts + 1, success = VALUES(success)
-                """, (user_id, story_id, success))
+                , (user_id, story_id, success))
                 connection.commit()
+
+            
+            """
         else:
             return jsonify({"error": "Story not found"}), 404
     except pymysql.MySQLError as e:
@@ -127,7 +121,7 @@ def handle_guess():
     finally:
         connection.close()
 
-    return jsonify({"is_correct": success})
+    return jsonify({"is_correct": result})
 
 @app.route('/api/store_user', methods=['POST'])
 def store_user():
