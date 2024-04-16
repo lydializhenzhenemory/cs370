@@ -92,3 +92,12 @@ CREATE TABLE challenge_attempts (
 
 ALTER TABLE stories AUTO_INCREMENT = 1;
 DELETE FROM stories WHERE id>100;
+
+ALTER TABLE user_story_attempts
+DROP FOREIGN KEY user_story_attempts_ibfk_3;
+
+
+INSERT INTO user_story_attempts (user_id, story_id, question_attempts, success, session_type, session_id) VALUES
+(1, 10, 5, 1, 'single', 1001),
+(1, 11, 7, 0, 'single', 1002),
+(2, 10, 3, 1, 'single', 1003);
