@@ -44,7 +44,7 @@ export default {
       guessAttempts: sessionStorage.getItem('guessAttempts') || 3, //change later
       guess: '',
       showGuessModal: false,
-      questionLimit: sessionStorage.getItem('questionLimit') || 10, //change later 
+      questionLimit: sessionStorage.getItem('questionLimit') || 20, //change later 
       questionLog: [],
       userQuestion: '',
       typedTitle: '',
