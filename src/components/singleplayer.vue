@@ -10,6 +10,7 @@
         placeholder="Text a question:"
         class="question-input"
         @keyup.enter="submitQuestion"
+        :disabled="questionLimitReached"
       />
     </div>
     <div class="question-log" ref="questionLogContainer">
@@ -43,7 +44,7 @@ export default {
       guessAttempts: sessionStorage.getItem('guessAttempts') || 3, //change later
       guess: '',
       showGuessModal: false,
-      questionLimit: 10,
+      questionLimit: sessionStorage.getItem('questionLimit') || 10, //change later 
       questionLog: [],
       userQuestion: '',
       typedTitle: '',
@@ -75,16 +76,12 @@ export default {
     }
   },
   watch: {
-    questionLimitReached(newVal) { //remove this later, we want user to be able to use their guesses despite question limit being reached
-      if (newVal) {
-        this.$router.push('/modes/singleplayer/losing');
-      }
-    },
     guessAttempts(newVal) {
       if (newVal === 0) {
         this.$router.push('/modes/singleplayer/losing');
         //reset guess attempts and other game state when redirecting to losing page
         this.fetchNewPromptAndReset();
+
         //sessionStorage.setItem('pageVisited', 'false');
       }
     }
@@ -92,12 +89,14 @@ export default {
   mounted() {
     //this data stored in each session so refreshing wont affeect it
     if (sessionStorage.getItem('pageVisited')) {
+
       this.typedTitle = sessionStorage.getItem('typedTitle');
       this.story_id = sessionStorage.getItem('storyId');
       this.questionLog = JSON.parse(sessionStorage.getItem('questionLog')) || [];
   } else {
     this.fetchNewPrompt();
   }
+
   sessionStorage.setItem('pageVisited', 'true');
   },
   methods: {
@@ -112,6 +111,7 @@ export default {
           this.typeTitle(prompt);
           sessionStorage.setItem('typedTitle', prompt);
           sessionStorage.setItem('storyId', this.story_id);
+
         })
         .catch((error) => {
           console.error(error);
@@ -129,7 +129,6 @@ export default {
       }, 75);
     },
     submitQuestion() {
-      //const path = 'http://127.0.0.1:5000/single_player/question';
       const path = 'https://cs370projectbackend-0t8f5ewp.b4a.run/single_player/question';
       axios.post(path, { question: this.userQuestion, story_id: this.story_id, user_id: '' })
         .then((response) => {
@@ -158,6 +157,8 @@ export default {
     fetchNewPromptAndReset() {
       this.guessAttempts = 3;
       sessionStorage.setItem('guessAttempts', this.guessAttempts);
+      this.questionLimit = 10; // Reset the question limit
+      sessionStorage.setItem('questionLimit', this.questionLimit);
 
       sessionStorage.removeItem('typedTitle');
       sessionStorage.removeItem('storyId');
@@ -179,7 +180,6 @@ export default {
       this.guess = '';
     },
     submitGuess() {
-      //const path = 'http://127.0.0.1:5000/single_player/guess'; //local for now, change this!!!
       const path = 'https://cs370projectbackend-0t8f5ewp.b4a.run/single_player/guess';
       axios.post(path, {
         guess: this.guess,
@@ -366,4 +366,5 @@ export default {
   font-weight: bold;
   color: white;
 }
+
 </style>
