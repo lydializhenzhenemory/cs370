@@ -44,7 +44,7 @@ export default {
       guessAttempts: sessionStorage.getItem('guessAttempts') || 3, //change later
       guess: '',
       showGuessModal: false,
-      questionLimit: sessionStorage.getItem('questionLimit') || 10, //change later 
+      questionLimit: sessionStorage.getItem('questionLimit') || 20, //change later 
       questionLog: [],
       userQuestion: '',
       typedTitle: '',
@@ -157,7 +157,7 @@ export default {
     fetchNewPromptAndReset() {
       this.guessAttempts = 3;
       sessionStorage.setItem('guessAttempts', this.guessAttempts);
-      this.questionLimit = 10; // Reset the question limit
+      this.questionLimit = 20; // Reset the question limit
       sessionStorage.setItem('questionLimit', this.questionLimit);
 
       sessionStorage.removeItem('typedTitle');
