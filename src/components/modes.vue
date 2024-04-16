@@ -161,7 +161,7 @@ export default {
 
 
     fetchLeaderboardData() {
-      axios.get('http://127.0.0.1:5000/leaderboard')
+      axios.get('https://cs370projectbackend-0t8f5ewp.b4a.run/leaderboard')
         .then(response => {
           this.leaderboard = response.data;
         })
