@@ -152,57 +152,44 @@ def store_user():
     return jsonify({"status": "success", "message": "User data stored successfully."})
 
 
-@app.route('/end_game_session', methods=['POST'])
-def end_game_session():
-    # Get the JSON data sent from the frontend
-    session_data = request.get_json()
+# @app.route('/end_game_session', methods=['POST'])
+# def end_game_session():
+#     # Get the JSON data sent from the frontend
+#     session_data = request.get_json()
+#     required_fields = ['session_id', 'user_id', 'story_id', 'session_type', 
+#                        'session_status', 'question_count', 'guess_attempts', 'last_activity']
+#     if not all(field in session_data for field in required_fields):
+#         return jsonify({'status': 'error', 'message': 'Missing data'}), 400
+#     connection = pymysql.connect(**db_config)
     
-    # Ensure that all required fields are in the session data
-    required_fields = ['session_id', 'user_id', 'story_id', 'session_type', 
-                       'session_status', 'question_count', 'guess_attempts', 'last_activity']
-    if not all(field in session_data for field in required_fields):
-        return jsonify({'status': 'error', 'message': 'Missing data'}), 400
-    
-    # Connect to the database
-    connection = pymysql.connect(**db_config)
-    
-    try:
-        with connection.cursor() as cursor:
-            # SQL query to insert or update the session information
-            sql = """
-            INSERT INTO game_sessions (session_id, user_id, story_id, session_type, 
-                                       session_status, question_count, guess_attempts, 
-                                       last_activity)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-            ON DUPLICATE KEY UPDATE
-            session_status = VALUES(session_status),
-            question_count = VALUES(question_count),
-            guess_attempts = VALUES(guess_attempts),
-            last_activity = VALUES(last_activity)
-            """
-            # Execute the SQL query
-            cursor.execute(sql, (session_data['session_id'], session_data['user_id'], session_data['story_id'], 
-                                 session_data['session_type'], session_data['session_status'], 
-                                 session_data['question_count'], session_data['guess_attempts'], 
-                                 session_data['last_activity']))
+#     try:
+#         with connection.cursor() as cursor:
+#             sql = """
+#             INSERT INTO game_sessions (session_id, user_id, story_id, session_type, 
+#                                        session_status, question_count, guess_attempts, 
+#                                        last_activity)
+#             VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+#             ON DUPLICATE KEY UPDATE
+#             session_status = VALUES(session_status),
+#             question_count = VALUES(question_count),
+#             guess_attempts = VALUES(guess_attempts),
+#             last_activity = VALUES(last_activity)
+#             """
+#             # Execute the SQL query
+#             cursor.execute(sql, (session_data['session_id'], session_data['user_id'], session_data['story_id'], 
+#                                  session_data['session_type'], session_data['session_status'], 
+#                                  session_data['question_count'], session_data['guess_attempts'], 
+#                                  session_data['last_activity']))
             
-            # Commit the transaction
-            connection.commit()
+#             connection.commit()
             
-            # Return a success response
-            return jsonify({'status': 'success', 'message': 'Session data updated successfully'})
+#             return jsonify({'status': 'success', 'message': 'Session data updated successfully'})
             
-    except Exception as e:
-        # If an error occurs, rollback the transaction and return an error response
-        connection.rollback()
-        return jsonify({'status': 'error', 'message': str(e)}), 500
-    finally:
-        # Ensure that the database connection is closed
-        connection.close()
-
-# Make sure to run the Flask app
-if __name__ == '__main__':
-    app.run(debug=True)  # Turn off debug mode in production
+#     except Exception as e:
+#         connection.rollback()
+#         return jsonify({'status': 'error', 'message': str(e)}), 500
+#     finally:
+#         connection.close()
 
 
 @app.route('/leaderboard', methods=['GET'])
