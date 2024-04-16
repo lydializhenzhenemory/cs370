@@ -10,6 +10,7 @@
         placeholder="Text a question:"
         class="question-input"
         @keyup.enter="submitQuestion"
+        :disabled="questionLimitReached"
       />
     </div>
     <div class="question-log" ref="questionLogContainer">
@@ -43,7 +44,7 @@ export default {
       guessAttempts: sessionStorage.getItem('guessAttempts') || 3, //change later
       guess: '',
       showGuessModal: false,
-      questionLimit: 10,
+      questionLimit: sessionStorage.getItem('questionLimit') || 10, //change later 
       questionLog: [],
       userQuestion: '',
       typedTitle: '',
@@ -75,11 +76,6 @@ export default {
     }
   },
   watch: {
-    questionLimitReached(newVal) { //remove this later, we want user to be able to use their guesses despite question limit being reached
-      if (newVal) {
-        this.$router.push('/modes/singleplayer/losing');
-      }
-    },
     guessAttempts(newVal) {
       if (newVal === 0) {
         this.$router.push('/modes/singleplayer/losing');
@@ -161,6 +157,8 @@ export default {
     fetchNewPromptAndReset() {
       this.guessAttempts = 3;
       sessionStorage.setItem('guessAttempts', this.guessAttempts);
+      this.questionLimit = 10; // Reset the question limit
+      sessionStorage.setItem('questionLimit', this.questionLimit);
 
       sessionStorage.removeItem('typedTitle');
       sessionStorage.removeItem('storyId');
