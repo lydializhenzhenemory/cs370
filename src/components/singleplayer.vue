@@ -49,6 +49,7 @@ export default {
       userQuestion: '',
       typedTitle: '',
       responseData: '',
+      typingInterval: null,
       gameContainerStyle: {
         position: 'relative',
         width: '100%',
@@ -101,6 +102,7 @@ export default {
   },
   methods: {
     fetchNewPrompt() {
+      clearInterval(this.typingInterval); //clear interval if exists before typinf prompt
       this.questionLog = [];
       this.questionCount = 0;
       const path = 'https://cs370projectbackend-0t8f5ewp.b4a.run/single_player';
@@ -119,11 +121,11 @@ export default {
     },
     typeTitle(title) {
       let index = 0;
-      const interval = setInterval(() => {
+      this.typingInterval = setInterval(() => {
         this.typedTitle += title[index];
         index++;
         if (index === title.length) {
-          clearInterval(interval);
+          clearInterval(this.typingInterval);
           sessionStorage.setItem('typedTitle', this.typedTitle);
         }
       }, 75);
