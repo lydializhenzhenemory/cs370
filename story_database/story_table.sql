@@ -101,3 +101,34 @@ INSERT INTO user_story_attempts (user_id, story_id, question_attempts, success, 
 (1, 10, 5, 1, 'single', 1001),
 (1, 11, 7, 0, 'single', 1002),
 (2, 10, 3, 1, 'single', 1003);
+
+ALTER TABLE users ADD COLUMN firebase_uid VARCHAR(255) UNIQUE;
+
+SELECT CONSTRAINT_NAME 
+FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS 
+WHERE TABLE_NAME = 'users' AND CONSTRAINT_TYPE = 'UNIQUE';
+
+ALTER TABLE users DROP INDEX `email`;
+
+TRUNCATE TABLE game_sessions;
+TRUNCATE TABLE user_story_attempts;
+DELETE FROM users;
+
+ALTER TABLE user_story_attempts ADD attempt_id INT AUTO_INCREMENT PRIMARY KEY;
+
+ALTER TABLE user_story_attempts DROP FOREIGN KEY user_story_attempts_ibfk_1;
+ALTER TABLE user_story_attempts MODIFY COLUMN user_id VARCHAR(255);
+ALTER TABLE user_story_attempts ADD CONSTRAINT fk_user_firebase_uid FOREIGN KEY (user_id) REFERENCES users(firebase_uid) ON DELETE CASCADE;
+ALTER TABLE user_story_attempts DROP INDEX if_exists_unique_index_name;
+SHOW INDEXES FROM user_story_attempts;
+
+
+ALTER TABLE user_story_attempts DROP INDEX if_exists_unique_index_on_user_id;
+
+SHOW KEYS FROM user_story_attempts WHERE Key_name = 'PRIMARY';
+ALTER TABLE user_story_attempts DROP PRIMARY KEY;
+
+SELECT CONSTRAINT_NAME, TABLE_NAME
+FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+WHERE REFERENCED_TABLE_NAME = 'user_story_attempts' AND REFERENCED_COLUMN_NAME = 'user_id';
+
