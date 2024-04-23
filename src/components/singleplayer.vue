@@ -78,11 +78,11 @@ export default {
   watch: {
     guessAttempts(newVal) {
       if (newVal === 0) {
+        this.endSession();
         this.$router.push('/modes/singleplayer/losing');
         //reset guess attempts and other game state when redirecting to losing page
         this.fetchNewPromptAndReset();
-
-        //sessionStorage.setItem('pageVisited', 'false');
+        sessionStorage.setItem('pageVisited', 'false');
       }
     }
   },
@@ -201,6 +201,7 @@ export default {
         }
         this.guessResponse = response.data.is_correct;
         if (response.data.is_correct === 'Correct') {
+          this.endSession();
           this.$router.push('/modes/singleplayer/winning');
         }
       })
@@ -208,6 +209,45 @@ export default {
         console.error('Error submitting guess:', error);
         this.closeGuessModal();
       });
+    }, 
+    // this should be called before redirecting to new page while now it is called for every question attempt
+    endSession() {
+      console.log("endSession called");
+      this.checkAndSendUserInfo();
+    },
+    checkAndSendUserInfo() {
+      console.log("checkAndSendUserInfo called");
+      const userString = sessionStorage.getItem('user');
+        if (userString) {
+        let userInfo;
+        try {
+          // Try parsing the user data string into an object
+          userInfo = JSON.parse(userString);
+        } catch (e) {
+          // If parsing fails, log the error and exit the function
+          console.error("Error parsing user data from sessionStorage:", e);
+          return; // Stop execution if there's an error
+        }
+        // Now that we have the userInfo, we can create the userData object
+        const userData = {
+          id: userInfo.uid, // User's unique ID from session storage
+          win_or_lose: this.determineOutcome(), // This method should return 'win' or 'lose'
+          questions_attempted: this.questionLog.length,
+          story_id: this.story_id
+        };
+        // Send the user data to the backend
+        axios.post('http://127.0.0.1:5000/api/store_game_session', userData)
+          .then(response => {
+            console.log('User game data sent to backend:', response.data);
+          })
+          .catch(error => {
+            console.error('Error during POST request:', error);
+            console.error('Error details:', error.response);
+          });
+      }
+  },
+    determineOutcome() {
+      return this.guessResponse === 'Correct' ? 1 : 0;
     }
   }
 }

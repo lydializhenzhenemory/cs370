@@ -116,6 +116,11 @@ export default {
               name: user.displayName,
               email: user.email,
             };
+            sessionStorage.setItem('user', JSON.stringify({
+              uid: user.uid,
+              displayName: user.displayName,
+              email: user.email,
+            }));
             // store user information in the backend 
             
             axios.post('https://cs370projectbackend-0t8f5ewp.b4a.run/api/store_user', userData)
