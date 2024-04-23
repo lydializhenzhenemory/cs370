@@ -7,9 +7,10 @@ import pymysql.cursors
 from openai import OpenAI
 from test_gpt import openai_chat, win_or_lose
 import os
+from pymysql.err import IntegrityError
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}}) # allows all origins for all routes.
 
 """with open('db_config.json', 'r') as config_file:
     db_config = json.load(config_file)
@@ -128,70 +129,56 @@ def store_user():
     connection = pymysql.connect(host = os.environ.get('HOST'), port = int(os.environ.get('PORT')), database = os.environ.get('DATABASE'), user = os.environ.get('USER'), password = os.environ.get('PASSWORD'))
     try:
         with connection.cursor() as cursor:
-            # Check if the user already exists in the database
-            cursor.execute("SELECT id FROM users WHERE email = %s", (user_data['email'],))
+            # Check if the username is already used
+            cursor.execute("SELECT id FROM users WHERE username = %s", (user_data['name'],))
+            if cursor.fetchone():
+                return jsonify({"status": "error", "message": "Username already exists. Please choose another one."}), 400
+
+            # Check if the user exists by firebase_uid
+            cursor.execute("SELECT id FROM users WHERE firebase_uid = %s", (user_data['uid'],))
             existing_user = cursor.fetchone()
+
             if existing_user:
-                # If user exists, update their info
                 cursor.execute("""
                     UPDATE users 
-                    SET username = %s 
-                    WHERE email = %s
-                """, (user_data['name'], user_data['email']))
+                    SET username = %s, email = %s 
+                    WHERE firebase_uid = %s
+                """, (user_data['name'], user_data['email'], user_data['uid']))
             else:
-                # If not, insert the new user data
                 cursor.execute("""
-                    INSERT INTO users (username, email) 
-                    VALUES (%s, %s)
-                """, (user_data['name'], user_data['email']))
+                    INSERT INTO users (username, email, firebase_uid) 
+                    VALUES (%s, %s, %s)
+                """, (user_data['name'], user_data['email'], user_data['uid']))
             connection.commit()
     except pymysql.MySQLError as e:
         connection.rollback()
         return jsonify({"status": "error", "message": str(e)}), 500
     finally:
         connection.close()
-
     return jsonify({"status": "success", "message": "User data stored successfully."})
 
-# @app.route('/end_game_session', methods=['POST'])
-# def end_game_session():
-#     # Get the JSON data sent from the frontend
-#     session_data = request.get_json()
-#     required_fields = ['session_id', 'user_id', 'story_id', 'session_type', 
-#                        'session_status', 'question_count', 'guess_attempts', 'last_activity']
-#     if not all(field in session_data for field in required_fields):
-#         return jsonify({'status': 'error', 'message': 'Missing data'}), 400
-#     connection = pymysql.connect(**db_config)
-#     connection = pymysql.connect(host = os.environ.get('HOST'), port = int(os.environ.get('PORT')), database = os.environ.get('DATABASE'), user = os.environ.get('USER'), password = os.environ.get('PASSWORD'))
+@app.route('/api/game_data', methods=['POST'])
+def store_game_data():
+    game_data = request.json
+    #connection = pymysql.connect(**db_config)
+    connection = pymysql.connect(host = os.environ.get('HOST'), port = int(os.environ.get('PORT')), database = os.environ.get('DATABASE'), user = os.environ.get('USER'), password = os.environ.get('PASSWORD'))
+    try:
+        with connection.cursor() as cursor:
+            # Insert the game data into the database
+            cursor.execute("""
+                INSERT INTO game_sessions (user_id, win_or_lose, questions_attempted, story_id) 
+                VALUES (%s, %s, %s, %s)
+            """, (game_data['id'], game_data['win_or_lose'], game_data['questions_attempted'], game_data['story_id']))
+            connection.commit()
+    except pymysql.MySQLError as e:
+        connection.commit()
+    except pymysql.MySQLError as e:
+        connection.rollback()
+        return jsonify({"status": "error", "message": str(e)}), 500
+    finally:
+        connection.close()
 
-#     try:
-#         with connection.cursor() as cursor:
-#             sql = """
-#             INSERT INTO game_sessions (session_id, user_id, story_id, session_type, 
-#                                        session_status, question_count, guess_attempts, 
-#                                        last_activity)
-#             VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-#             ON DUPLICATE KEY UPDATE
-#             session_status = VALUES(session_status),
-#             question_count = VALUES(question_count),
-#             guess_attempts = VALUES(guess_attempts),
-#             last_activity = VALUES(last_activity)
-#             """
-#             # Execute the SQL query
-#             cursor.execute(sql, (session_data['session_id'], session_data['user_id'], session_data['story_id'], 
-#                                  session_data['session_type'], session_data['session_status'], 
-#                                  session_data['question_count'], session_data['guess_attempts'], 
-#                                  session_data['last_activity']))
-            
-#             connection.commit()
-            
-#             return jsonify({'status': 'success', 'message': 'Session data updated successfully'})
-            
-#     except Exception as e:
-#         connection.rollback()
-#         return jsonify({'status': 'error', 'message': str(e)}), 500
-#     finally:
-#         connection.close()
+    return jsonify({"status": "success", "message": "Game data stored successfully."})
 
 
 @app.route('/leaderboard', methods=['GET'])
@@ -201,6 +188,7 @@ def get_leaderboard():
 
     try:
         with connection.cursor() as cursor:
+            # Include a WHERE clause that excludes guest users from the leaderboard
             sql = """
             SELECT u.username, COUNT(usa.success) AS wins, AVG(usa.question_attempts) AS avg_attempts
             FROM users u
@@ -214,6 +202,34 @@ def get_leaderboard():
             return jsonify(leaderboard)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    finally:
+        connection.close()
+
+@app.route('/api/store_game_session', methods=['POST'])
+def store_game_session():
+    print("Endpoint hit")
+    # Extract the game session data from the request
+    game_session_data = request.json
+    #connection = pymysql.connect(**db_config)
+    connection = pymysql.connect(host = os.environ.get('HOST'), port = int(os.environ.get('PORT')), database = os.environ.get('DATABASE'), user = os.environ.get('USER'), password = os.environ.get('PASSWORD'))
+
+    try:
+        with connection.cursor() as cursor:
+            # Insert the game session data into the database
+            cursor.execute("""
+                INSERT INTO user_story_attempts (user_id, success, question_attempts, story_id) 
+                VALUES (%s, %s, %s, %s)
+            """, (
+                game_session_data['id'],
+                game_session_data['win_or_lose'],
+                game_session_data['questions_attempted'],
+                game_session_data['story_id']
+            ))
+            connection.commit()
+            return jsonify({"status": "success", "message": "Game session data stored successfully."}), 200
+    except pymysql.MySQLError as e:
+        connection.rollback()
+        return jsonify({"status": "error", "message": str(e)}), 500
     finally:
         connection.close()
 
