@@ -190,12 +190,11 @@ def get_leaderboard():
         with connection.cursor() as cursor:
             # Include a WHERE clause that excludes guest users from the leaderboard
             sql = """
-            SELECT u.username, COUNT(usa.success) AS wins, AVG(usa.question_attempts) AS avg_attempts
-            FROM users u
-            JOIN user_story_attempts usa ON u.id = usa.user_id
-            WHERE usa.success = 1
-            GROUP BY u.username
-            ORDER BY wins DESC, avg_attempts ASC, u.username ASC
+            SELECT u.username, SUM(usa.success) AS wins, AVG(usa.question_attempts) AS 'Average Questions'
+            FROM user_story_attempts usa
+            JOIN users u ON u.firebase_uid = usa.user_id
+            GROUP BY usa.user_id
+            ORDER BY wins DESC, 'Average Questions' ASC, u.username ASC
             """
             cursor.execute(sql)
             leaderboard = cursor.fetchall()
