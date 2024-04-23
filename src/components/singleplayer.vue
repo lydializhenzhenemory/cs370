@@ -236,7 +236,7 @@ export default {
           story_id: this.story_id
         };
         // Send the user data to the backend
-        axios.post('http://127.0.0.1:5000/api/store_game_session', userData)
+        axios.post('https://cs370projectbackend-0t8f5ewp.b4a.run/api/store_game_session', userData)
           .then(response => {
             console.log('User game data sent to backend:', response.data);
           })
