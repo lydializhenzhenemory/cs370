@@ -6,7 +6,7 @@
       <button @click="playAgain" class="play-again-button">Play again ;)</button>
     </div>
   </template>
-  
+
   <script>
   export default {
     name: 'DetectiveGame',
@@ -39,7 +39,7 @@
     }
   }
   </script>
-  
+
   <style scoped>
   .play-again-button {
     position: absolute;
@@ -61,5 +61,6 @@
   .play-again-button:hover {
     background-color: #35485d;
   }
+
   </style>
   
