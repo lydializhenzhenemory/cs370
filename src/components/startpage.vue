@@ -29,7 +29,7 @@ export default {
         left: '50%',
         transform: 'translate(-50%, -50%)',
         color: 'white',
-        fontSize: '14em',
+        fontSize: '10em',
         fontWeight: '600',
         fontFamily: "'Anta', sans-serif"
       },
