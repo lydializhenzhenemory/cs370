@@ -20,6 +20,7 @@ class FlaskAppTestCase(unittest.TestCase):
         app.config['MYSQL_DATABASE_DB'] = 'detectaive'
         self.connection = pymysql.connect(**db_config)
         with self.connection.cursor() as cursor:
+            # testing with user id 100 & story id 100, firstly insert into the tables
             cursor.execute("INSERT INTO users (id, username, password, email) VALUES (100, 'testuser', 'testpass', 'test@example.com') ON DUPLICATE KEY UPDATE id=id;")
             cursor.execute("INSERT INTO stories (id, story_name, surface_story, truth, average_attempts, difficulty) VALUES (100, 'Test Story', 'This is a surface story.', 'This is the truth.', 0, 'easy') ON DUPLICATE KEY UPDATE id=id;")
             cursor.execute("""
@@ -27,7 +28,7 @@ class FlaskAppTestCase(unittest.TestCase):
                 VALUES (100, 100, 0, 0) ON DUPLICATE KEY UPDATE user_id=user_id;
             """)
             self.connection.commit()
-    
+
     def tearDown(self):
         # Clean up the database
         with self.connection.cursor() as cursor:
@@ -36,14 +37,13 @@ class FlaskAppTestCase(unittest.TestCase):
             cursor.execute("DELETE FROM stories WHERE id = 100;")
             self.connection.commit()
         self.connection.close()
+
     
 
     def test_handle_guess(self):
         test_data = {'guess': 'Your Guess', 'story_id': 100, 'user_id': 100}
-        
         response = self.app.post('/single_player/guess', json=test_data)
-        
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200) #successful handling of the guess
 
 if __name__ == '__main__':
     unittest.main()

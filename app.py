@@ -1,8 +1,8 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from flask_cors import cross_origin
 import random
 import json
-import pymysql.cursors
 import pymysql.cursors
 from openai import OpenAI
 from test_gpt import openai_chat, win_or_lose
@@ -11,6 +11,7 @@ from pymysql.err import IntegrityError
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}}) # allows all origins for all routes.
+
 
 """with open('db_config.json', 'r') as config_file:
     db_config = json.load(config_file)
@@ -44,7 +45,7 @@ def handle_question():
     data = request.get_json()
     question = data.get('question')
     story_id = data.get('story_id')
-    user_id = data.get('user_id')  # Assuming you're passing the user ID
+    user_id = data.get('user_id') 
 
     #connection = pymysql.connect(**db_config)
     connection = pymysql.connect(host = os.environ.get('HOST'), port = int(os.environ.get('PORT')), database = os.environ.get('DATABASE'), user = os.environ.get('USER'), password = os.environ.get('PASSWORD'))
@@ -93,7 +94,9 @@ def handle_guess():
 
         if story:
             # Logic to determine if the guess is correct
+
             result = win_or_lose(guess, story['truth'], surface_prompt)
+
 
             if result == "Correct" or result == "Incorrect":
                 return jsonify({"is_correct": result})

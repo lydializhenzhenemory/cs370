@@ -23,6 +23,7 @@ def openai_chat(question, story):
               "You should only output exactly one of the words ('Yes', 'No', 'Maybe', 'Irrelevant', 'Many‘) in all circumstances. You"
               "will never provide an explanation." + '\n' + "The story and the question are as follows: " + "Story: " + '\n' + story + '\n' + "Question: " + question + "")
 
+
     #print(prompt)
     response = client.chat.completions.create(
         #model="gpt-3.5-turbo",
@@ -36,6 +37,7 @@ def openai_chat(question, story):
     return response.choices[0].message.content
 
 def win_or_lose(user_answer, story, surface_prompt):
+
     """with open('openai_api_key.txt', 'r') as file:
         api_key = file.read().strip()"""
     
@@ -44,6 +46,7 @@ def win_or_lose(user_answer, story, surface_prompt):
     prompt = ("Now I will give you a surface prompt, a story, and an answer. Your job is to"
               "determine if the answer about the story is correct or not and if it is the root cause of what"
               "happened in the surface prompt. Notice you can only output the exact word of either \'Correct\' or \'Incorrect\'. "
+
               "Notice that the answer must hit the core of the story to be evaluated as correct. "
               "For example, if the dog is killed by eating too much of a chocolate cake (as chocolate"
               "is toxic to dogs), the answer needs to point out the determinate details of the story that is not "
