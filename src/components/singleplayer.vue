@@ -71,7 +71,7 @@ export default {
         left: '50%',
         transform: 'translate(-50%, -50%)',
         color: 'white',
-        fontSize: '1.5em',
+        fontSize: '1.5vw',
         fontWeight: '550',
         fontFamily: "'Anta', sans-serif",
         textAlign: 'center',
@@ -314,7 +314,7 @@ export default {
   transform: translateX(-50%);
   width: 100%;
   max-width: 1000px;
-  font-size: 22px;
+  font-size: 2vw;
   font-family: "Lucida Console", "Courier New", monospace;
   font-weight: bold;
   color: rgba(255,255,255,0.8);;
@@ -323,7 +323,7 @@ export default {
 .question-input {
   width: 100%;
   padding: 1em;
-  font-size: 1.5em;
+  font-size: 1.5vw;
   font-family: "Lucida Console", "Courier New", monospace;
   color: whitesmoke;
   border: none;
@@ -376,7 +376,7 @@ export default {
 }
 
 .log-header {
-  font-size: 1.2em;
+  font-size: 1.2vw;
   font-weight: bold;
   font-family: 'Courier', monospace;
   color: whitesmoke;
@@ -384,7 +384,7 @@ export default {
 }
 
 .empty-log-message {
-  font-size: 1em;
+  font-size: 1vw;
   font-family: 'Courier New', monospace;
   color: rgba(255,255,255,0.5);
   margin-bottom: 5px;
@@ -392,7 +392,7 @@ export default {
 
 .log-item {
   font-family: 'Courier New', monospace;
-  font-size: 1em;
+  font-size: 1vw;
   color: white;
   margin: 5px 0;
 }
@@ -408,7 +408,7 @@ export default {
   border: none;
   border-radius: 5px;
   font-family: 'Anta', sans-serif;
-  font-size: 1em;
+  font-size: 1vw;
   cursor: pointer;
   transition: background-color 0.3s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -435,7 +435,7 @@ export default {
 .close {
   color: #aaa;
   float: right;
-  font-size: 28px;
+  font-size: 3vw;
   font-weight: bold;
 }
 .close:hover,
@@ -469,7 +469,7 @@ export default {
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 24px;
+  font-size: 2vw;
   font-family: 'Anta', sans-serif;
   margin: 4px 2px;
   cursor: pointer;
@@ -482,7 +482,7 @@ export default {
 
 .guess-attempts-text {
   display: block;
-  font-size: 0.6em;
+  font-size: 0.6vw;
   color: rgba(255, 255, 255, 0.7);
   margin-top: 5px;
 }
@@ -494,7 +494,7 @@ export default {
   left: 80%;
   transform: translateX(-50%);
   font-family: 'Anta', sans-serif;
-  font-size: 2em;
+  font-size: 2vw;
   font-weight: bold;
   color: rgb(198, 33, 33);
   animation: fadeIn 0.5s ease-in-out, pulse 1s infinite alternate;

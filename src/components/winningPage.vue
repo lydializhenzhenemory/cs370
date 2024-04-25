@@ -25,7 +25,7 @@ export default {
         left: '50%',
         transform: 'translate(-50%, -50%)',
         color: 'white',
-        fontSize: '3em',
+        fontSize: '3vw',
         fontWeight: '550',
         fontFamily: "'Anta', sans-serif"
       }
@@ -52,7 +52,7 @@ export default {
   border: none;
   border-radius: 8px;
   font-family: 'Anta', sans-serif;
-  font-size: 1.5em;
+  font-size: 1.5vw;
   cursor: pointer;
   transition: background-color 0.3s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Added shadow */
