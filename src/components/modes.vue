@@ -71,7 +71,7 @@ export default {
         left: '50%',
         transform: 'translate(-50%, -50%)',
         color: 'white',
-        fontSize: '5em',
+        fontSize: '5vw',
         fontWeight: '550',
         fontFamily: "'Anta', sans-serif"
       },
@@ -87,7 +87,7 @@ export default {
         left: '50%',
         transform: 'translate(-50%, -50%)', // Center it horizontally
         textAlign: 'center',
-        fontSize: '1.2em', // Dynamic font-size adjustment
+        fontSize: '1.2vw', // Dynamic font-size adjustment
         width: '100%', // Take full width to center the content
         maxWidth: '600px', // Max width of the content
         zIndex: 2, // Ensure it's above other content
@@ -99,7 +99,7 @@ export default {
         left: '50%',
         transform: 'translate(-50%, -50%)',
         padding: '15px 60px',
-        fontSize: '4em',
+        fontSize: '4vw',
         cursor: 'pointer',
         backgroundColor: 'rgba(0, 0, 0, 0.3)',
         border: 'none',
@@ -115,7 +115,7 @@ export default {
         left: '50%',
         transform: 'translate(-50%, -50%)',
         padding: '15px 70px',
-        fontSize: '3em',
+        fontSize: '3vw',
         cursor: 'pointer',
         backgroundColor: 'rgba(0, 0, 0, 0.3)',
         border: 'none',
@@ -136,7 +136,7 @@ export default {
         textDecoration: 'underline',
         cursor: 'pointer',
         padding: '20px 20px',
-        fontSize: '2em',
+        fontSize: '2vw',
         fontFamily: "'Anta', sans-serif"
       }
     };
@@ -247,13 +247,13 @@ export default {
 .dialog h2 {
   font-family: 'Anta', sans-serif;
   text-decoration: underline;
-  font-size: 2em;
+  font-size: 2vw;
 }
 
 .instruction-paragraph {
   margin-bottom: 1em;
   font-family: 'Anta', sans-serif; /* match fonts */
-  font-size: 1.5em;
+  font-size: 1.5vw;
 }
 
 .close-button {
@@ -266,6 +266,6 @@ export default {
   padding: 5px 10px;
   border-radius: 3px;
   font-weight: bold;
-  font-size: 1.2em;
+  font-size: 1.2vw;
 }
 </style>
