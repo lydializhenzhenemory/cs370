@@ -71,7 +71,7 @@ export default {
         left: '50%',
         transform: 'translate(-50%, -50%)',
         color: 'white',
-        fontSize: 'calc(0.8vw + 1vh)',
+        fontSize: 'calc(0.8vw + 1.4vh)',
         fontWeight: '550',
         fontFamily: "'Anta', sans-serif",
         textAlign: 'center',
@@ -303,7 +303,7 @@ export default {
   bottom: 6%;
   left: 30%;
   transform: translateX(-40%);
-  width: 50%;
+  width: 58%;
   max-width: 1000px;
 }
 
@@ -460,8 +460,8 @@ export default {
 /*button starts here*/
 .guess-button {
   position: absolute;
-  bottom: 2vw;
-  right: 2vw;
+  bottom: 5vw;
+  right: 4vw;
   background-color: rgb(88, 106, 52);
   border: none;
   color: white;
@@ -491,7 +491,8 @@ export default {
 .guess-response {
   position: absolute;
   top: 17%;
-  left: 80%;
+  left: 82%;
+  max-width: 200px;
   transform: translateX(-50%);
   font-family: 'Anta', sans-serif;
   font-size: calc(1vw + 1vh);
