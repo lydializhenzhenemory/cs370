@@ -72,7 +72,7 @@ export default {
         left: '50%',
         transform: 'translate(-50%, -50%)',
         color: 'white',
-        fontSize: '1.5em',
+        fontSize: 'calc(0.8vw + 1.4vh)',
         fontWeight: '550',
         fontFamily: "'Anta', sans-serif",
         textAlign: 'center',
@@ -312,9 +312,9 @@ export default {
 .question-box {
   position: absolute;
   bottom: 6%;
-  left: 40%;
-  transform: translateX(-50%);
-  width: 100%;
+  left: 30%;
+  transform: translateX(-40%);
+  width: 58%;
   max-width: 1000px;
 }
 
@@ -325,7 +325,7 @@ export default {
   transform: translateX(-50%);
   width: 100%;
   max-width: 1000px;
-  font-size: 22px;
+  font-size: calc(1vw + 1vh);
   font-family: "Lucida Console", "Courier New", monospace;
   font-weight: bold;
   color: rgba(255,255,255,0.8);;
@@ -334,7 +334,7 @@ export default {
 .question-input {
   width: 100%;
   padding: 1em;
-  font-size: 1.5em;
+  font-size: calc(1vw + 1vh);
   font-family: "Lucida Console", "Courier New", monospace;
   color: whitesmoke;
   border: none;
@@ -387,7 +387,7 @@ export default {
 }
 
 .log-header {
-  font-size: 1.2em;
+  font-size: calc(1vw + 1vh);
   font-weight: bold;
   font-family: 'Courier', monospace;
   color: whitesmoke;
@@ -395,7 +395,7 @@ export default {
 }
 
 .empty-log-message {
-  font-size: 1em;
+  font-size: calc(0.5vw + 1vh);
   font-family: 'Courier New', monospace;
   color: rgba(255,255,255,0.5);
   margin-bottom: 5px;
@@ -403,7 +403,7 @@ export default {
 
 .log-item {
   font-family: 'Courier New', monospace;
-  font-size: 1em;
+  font-size: calc(0.5vw + 1vh);
   color: white;
   margin: 5px 0;
 }
@@ -419,7 +419,7 @@ export default {
   border: none;
   border-radius: 5px;
   font-family: 'Anta', sans-serif;
-  font-size: 1em;
+  font-size: calc(0.5vw + 1vh);
   cursor: pointer;
   transition: background-color 0.3s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -446,7 +446,7 @@ export default {
 .close {
   color: #aaa;
   float: right;
-  font-size: 28px;
+  font-size: calc(1.5vw + 1.5vh);
   font-weight: bold;
 }
 .close:hover,
@@ -471,8 +471,8 @@ export default {
 /*button starts here*/
 .guess-button {
   position: absolute;
-  bottom: 57px;
-  right: 60px;
+  bottom: 5vw;
+  right: 4vw;
   background-color: rgb(88, 106, 52);
   border: none;
   color: white;
@@ -480,7 +480,7 @@ export default {
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 24px;
+  font-size: calc(1vw + 1vh);
   font-family: 'Anta', sans-serif;
   margin: 4px 2px;
   cursor: pointer;
@@ -493,7 +493,7 @@ export default {
 
 .guess-attempts-text {
   display: block;
-  font-size: 0.6em;
+  font-size: calc(0.5vw + 0.5vh);
   color: rgba(255, 255, 255, 0.7);
   margin-top: 5px;
 }
@@ -502,10 +502,11 @@ export default {
 .guess-response {
   position: absolute;
   top: 17%;
-  left: 80%;
+  left: 82%;
+  max-width: 200px;
   transform: translateX(-50%);
   font-family: 'Anta', sans-serif;
-  font-size: 2em;
+  font-size: calc(1vw + 1vh);
   font-weight: bold;
   color: rgb(198, 33, 33);
   animation: fadeIn 0.5s ease-in-out, pulse 1s infinite alternate;
