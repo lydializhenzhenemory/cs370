@@ -49,6 +49,7 @@ export default {
   data() {
     return {
       guessResponse: '',
+      result:0,
       guessAttempts: sessionStorage.getItem('guessAttempts') || 4, //change later
       guess: '',
       showGuessModal: false,
@@ -214,6 +215,7 @@ export default {
       })
       .then(response => {
         console.log('Guess submitted successfully:', response.data);
+        // let outcome = response.data.is_correct === 'Correct' ? 1 : 0;
         this.closeGuessModal(); //closes modal after guess, update later if needed
         //must decrement guess attempts if guess is incorrect
         if (response.data.is_correct === 'Incorrect') {
@@ -229,11 +231,19 @@ export default {
         
         this.endSession();
         if (response.data.is_correct === 'Correct') {
-          this.fetchNewPrompt(); //after user wins, story now changes upon new game
+          this.guessResponse = 'Correct';
+          this.result = this.guessResponse === 'Correct' ? 1 : 0;
+          console.log("Guess Response:", this.guessResponse);
+          console.log("Result:", this.result);
+
+          // this.fetchNewPrompt(); //after user wins, story now changes upon new game
           this.fetchNewPromptAndReset();
           sessionStorage.setItem('pageVisited', 'false');
           this.$router.push('/modes/singleplayer/winning');
         }
+        this.checkAndSendUserInfo();
+        sessionStorage.setItem('guessAttempts', this.guessAttempts);
+        this.resetGuessResponse();
       })
       .catch(error => {
         console.error('Error submitting guess:', error);
@@ -255,10 +265,10 @@ export default {
     // this should be called before redirecting to new page while now it is called for every question attempt
     endSession() {
       console.log("endSession called");
-      this.checkAndSendUserInfo();
     },
     checkAndSendUserInfo() {
       console.log("checkAndSendUserInfo called");
+      console.log("Sending Data - Win or Lose:", this.result);
       const userString = sessionStorage.getItem('user');
         if (userString) {
         let userInfo;
@@ -274,10 +284,11 @@ export default {
         // Now that we have the userInfo, we can create the userData object
         const userData = {
           id: userInfo.uid, // User's unique ID from session storage
-          win_or_lose: this.determineOutcome(), // This method should return 'win' or 'lose'
+          win_or_lose: this.result,// todo,
           questions_attempted: this.questionLog.length,
           story_id: this.story_id
         };
+        console.log("Guess Response Set:", this.guessResponse);
 
         // Send the user data to the backend
         axios.post('https://cs370projectbackend-0t8f5ewp.b4a.run/api/store_game_session', userData)
@@ -291,9 +302,9 @@ export default {
       }
   },
 
-    determineOutcome() {
-      return this.guessResponse === 'Correct' ? 1 : 0;
-    }
+    // determineOutcome() {
+    //   return this.guessResponse === 'Correct' ? 1 : 0;
+    // }
   }
 }
 </script>
