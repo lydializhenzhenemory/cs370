@@ -1,0 +1,5 @@
+The endpoint: detectaive.cj0cq200ykmx.us-east-2.rds.amazonaws.com
+Port number: 3306
+Database name: detectaive
+Usernames: admin
+Password: 1231234567567
