@@ -86,4 +86,3 @@ These help keep secrets (like API keys) hidden from the end user. You will need 
         SHOW TABLES;
         DESCRIBE table_name;
         etc to view and modify columns
-###   conda env export > cs370env.yml
