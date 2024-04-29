@@ -229,19 +229,19 @@ export default {
           sessionStorage.setItem('guessAttempts', this.guessAttempts);
         }
         
-        this.endSession();
         if (response.data.is_correct === 'Correct') {
           this.guessResponse = 'Correct';
           this.result = this.guessResponse === 'Correct' ? 1 : 0;
           console.log("Guess Response:", this.guessResponse);
           console.log("Result:", this.result);
-
+          
+          this.endSession();
           // this.fetchNewPrompt(); //after user wins, story now changes upon new game
           this.fetchNewPromptAndReset();
           sessionStorage.setItem('pageVisited', 'false');
           this.$router.push('/modes/singleplayer/winning');
         }
-        this.checkAndSendUserInfo();
+        //this.checkAndSendUserInfo();
         sessionStorage.setItem('guessAttempts', this.guessAttempts);
         this.resetGuessResponse();
       })
@@ -265,6 +265,7 @@ export default {
     // this should be called before redirecting to new page while now it is called for every question attempt
     endSession() {
       console.log("endSession called");
+      this.checkAndSendUserInfo();
     },
     checkAndSendUserInfo() {
       console.log("checkAndSendUserInfo called");
