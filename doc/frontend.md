@@ -16,12 +16,9 @@ startButtonStyle: An object containing CSS properties to style the start game bu
 signinButtonStyle: An object containing CSS properties to style the sign-in button.
 signInOut: A string that toggles between "Sign In" and "Sign Out" based on the user's authentication status.
 
-### Lifecycle Hooks
-
-mounted: Automatically types out the game title upon loading and checks for user authentication status to update the sign-in button text.
-
 ### Methods
 
+mounted: Automatically types out the game title upon loading and checks for user authentication status to update the sign-in button text.
 typeTitle(title, recursive): Creates a typing effect for the provided title. If recursive is true, the title re-types itself after a brief delay.
 startGame(): Uses Vue Router to navigate to the game modes page.
 signIn(): Handles user authentication. If no user is signed in, it initiates a sign-in process. If a user is signed in, it processes sign-out.
@@ -81,12 +78,9 @@ startButtonStyle: Defines the CSS for the start button, including positioning an
 signinButtonStyle: Similar to the start button, this defines the CSS for the sign-in button.
 signInOut: Text displayed on the sign-in button, toggles between "Sign In" and "Sign Out" based on user status.
 
-### Lifecycle Hooks
-
-mounted(): Invokes the typeTitle method to animate the game title and sets the sign-in button label based on session storage indicating user status.
-
 ### Methods
 
+mounted(): Invokes the typeTitle method to animate the game title and sets the sign-in button label based on session storage indicating user status.
 typeTitle(title, recursive): Implements a typing effect for the title. If recursive is true, the animation restarts after a brief pause.
 startGame(): Uses Vue Router to navigate to the game modes screen.
 signIn(): Manages user authentication. If the user is not signed in, it initiates a sign-in process using Google authentication. If signed in, it handles sign-out.
