@@ -160,29 +160,6 @@ def store_user():
         connection.close()
     return jsonify({"status": "success", "message": "User data stored successfully."})
 
-@app.route('/api/game_data', methods=['POST'])
-def store_game_data():
-    game_data = request.json
-    #connection = pymysql.connect(**db_config)
-    connection = pymysql.connect(host = os.environ.get('HOST'), port = int(os.environ.get('PORT')), database = os.environ.get('DATABASE'), user = os.environ.get('USER'), password = os.environ.get('PASSWORD'))
-    try:
-        with connection.cursor() as cursor:
-            # Insert the game data into the database
-            cursor.execute("""
-                INSERT INTO game_sessions (user_id, win_or_lose, questions_attempted, story_id) 
-                VALUES (%s, %s, %s, %s)
-            """, (game_data['id'], game_data['win_or_lose'], game_data['questions_attempted'], game_data['story_id']))
-            connection.commit()
-    except pymysql.MySQLError as e:
-        connection.commit()
-    except pymysql.MySQLError as e:
-        connection.rollback()
-        return jsonify({"status": "error", "message": str(e)}), 500
-    finally:
-        connection.close()
-
-    return jsonify({"status": "success", "message": "Game data stored successfully."})
-
 
 @app.route('/leaderboard', methods=['GET'])
 def get_leaderboard():
