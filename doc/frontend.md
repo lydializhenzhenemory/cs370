@@ -1,4 +1,4 @@
-# detectAIve
+# DetectAIve Front-end Documentation 
 
 ## startpage.vue
 ### Template Structure
