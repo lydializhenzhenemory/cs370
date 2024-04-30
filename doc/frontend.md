@@ -34,77 +34,32 @@ Fonts: Uses the 'Anta' font imported from Google Fonts to maintain a consistent 
 axios: Used for HTTP requests (e.g., posting user data to the backend).
 firebase/auth: Provides authentication services, used for managing user sign-in and sign-out.
 
+# modes.vue
 
-## multiplayer (leaderboard)
-### Template Structure
+## Overview
 
-Game Container (game-container): The main container that holds all UI elements, styled dynamically via gameContainerStyle.
-Title (title): Displays the title of the game with a typing effect, styled by titleStyle.
-Question Box: A text input field that allows users to enter their questions, styled to fit within the game container.
+responsible for rendering a mode selection screen for a game application. It allows users to choose to play single player, view the leaderboard, and access game instructions.
 
-### Data Properties
+## Structure
 
-userQuestion: A string that binds to the question input field, allowing the component to capture and handle user input.
-typedTitle: A string that represents the title displayed at the top of the game container, which appears with a typing effect.
-gameContainerStyle: An object containing CSS properties for styling the game's main container.
-titleStyle: An object containing CSS properties for styling the title.
+The component consists of three main sections:
 
-### Methods
+1. **Mode Selection Buttons**: Buttons to select different modes.
+2. **Leaderboard Display**: A section to display the leaderboard.
+3. **Instructions Dialog**: A dialog box displaying game instructions.
 
-mounted(): When the component is mounted, it immediately begins the typing animation for the title "story prompt: It is Jake's birthday today. His dog died in the afternoon."
-typeTitle(title): Animates the typing of the given title string. The animation simulates typing at a controlled pace.
-submitQuestion(): Captures the user's input when they press enter and logs it to the console. This method is meant to be expanded with functionality to handle the question, such as sending it to a backend service or processing it within the component.
+## Script
 
-### CSS Animations
+The script section defines the component's behavior and data. Here's a summary:
 
-typing: Progressively increases the width of the typing-effect span from 0 to 100%, creating the effect of text being typed.
-blink: Toggles the border color of the typing-effect span between white and transparent, simulating a blinking cursor.
+- **Data**: Contains the component's data properties such as `showDialog`, `showLeaderboard`, `leaderboard`, and styles for various elements.
+- **Created()**: Calls the `fetchLeaderboardData` method when the component is created to fetch leaderboard data.
+- **Methods**: Contains methods for starting single-player, the leaderboard display, and fetching leaderboard data from an external API.
 
+## External Dependencies
 
-## modes.vue
-
-### Template Structure
-
-Game Container: A central container that holds all elements of the game's start screen.
-Title: Displays a dynamically typed game title using the typing-effect style.
-Start Game Button: Initiates the game by navigating to the game mode selection screen.
-Sign-in Button: Allows the user to sign in or sign out using Google authentication.
-
-### Data Properties
-
-typedTitle: Stores the title that appears with a typing animation.
-titleStyle: Contains the CSS styles for the title, positioning it centrally.
-startButtonStyle: Defines the CSS for the start button, including positioning and styling.
-signinButtonStyle: Similar to the start button, this defines the CSS for the sign-in button.
-signInOut: Text displayed on the sign-in button, toggles between "Sign In" and "Sign Out" based on user status.
-
-### Methods
-
-mounted(): Invokes the typeTitle method to animate the game title and sets the sign-in button label based on session storage indicating user status.
-typeTitle(title, recursive): Implements a typing effect for the title. If recursive is true, the animation restarts after a brief pause.
-startGame(): Uses Vue Router to navigate to the game modes screen.
-signIn(): Manages user authentication. If the user is not signed in, it initiates a sign-in process using Google authentication. If signed in, it handles sign-out.
-
-### Authentication Flow
-
-Sign In: Uses Firebase to authenticate with Google. On successful authentication, stores user information in session storage and optionally in a backend database. Updates the UI to reflect the user's signed-in status.
-Sign Out: Clears user information from session storage and updates the UI to reflect the user's signed-out status.
-
-### API Endpoints
-
-User data storage: POST http://127.0.0.1:5000/api/store_user
-This endpoint is called to store authenticated user information in the backend.
-
-### Error Handling
-
-Handles errors related to the sign-in and sign-out processes, including Firebase errors such as wrong credentials or network issues.
-
-### External Resources and Dependencies
-
-Google Fonts: Uses the 'Anta' font family imported from Google Fonts for consistent typography across the component.
-axios: Used for HTTP requests to the backend.
-firebase/auth: Provides the authentication functionality via Firebase.
-
+- **Vue.js of course**
+- **axios**: Used for making HTTP requests to fetch leaderboard data from an external API.
 
 ## Singleplayer.vue
 
