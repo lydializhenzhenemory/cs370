@@ -1,4 +1,8 @@
-# detectaive
+# Detectaive
+
+# Video Presentation
+[https://youtu.be/PBPeaCT99FU](https://youtu.be/PBPeaCT99FU)
+
 ![image](https://github.com/lydializhenzhenemory/cs370/assets/97063631/3b91b0e2-c8b5-4baf-bf21-cc7b3baa9286)
 
 ```mermaid
