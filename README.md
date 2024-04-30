@@ -1,4 +1,6 @@
 # Detectaive
+# Public URL
+[https://www.detectaive.com/](https://www.detectaive.com/)
 
 # Video Presentation
 [https://youtu.be/PBPeaCT99FU](https://youtu.be/PBPeaCT99FU)
