@@ -1,6 +1,6 @@
-# Story Game API Documentation
+# DetectAIve API Documentation
 
-Welcome to the Story Game API! Use these endpoints to interact with the story-based game.
+Use these endpoints to interact with the story-based game.
 
 ## Endpoints
 
