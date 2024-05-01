@@ -16,4 +16,3 @@ Regarding the AWS database instance
         DESCRIBE table_name;
         etc to view and modify columns
 
-# conda env export > cs370env.yml
